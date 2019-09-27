@@ -34,15 +34,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#ifndef JIM_SOFTFLOATS_H
-#define JIM_SOFTFLOATS_H
+#ifndef JIM_SOFTFLOAT_H
+#define JIM_SOFTFLOAT_H
 
 #include <jim.h>
 
-#ifdef HAVE_SOFTFLOAT
+#ifndef JIM_FLOATS_H
+#error This header shall not be included directly
+#endif
+
+#ifndef HAVE_SOFTFLOAT
+#error SoftFloat IEEE emulation not found
+#endif
 
 #ifndef HAVE_LONG_LONG
-#error Configuration not supported
+#error Compiler configuration not supported
 #endif
 
 #ifdef __cplusplus

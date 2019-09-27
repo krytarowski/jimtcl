@@ -1,0 +1,114 @@
+#ifndef JIM_FLOATS_H
+#define JIM_FLOATS_H
+
+#include <jim.h>
+
+#ifndef HAVE_SOFTFLOAT
+
+/*----------------------------------------------------------------------------
+| jimtcl float/double
+*----------------------------------------------------------------------------*/
+typedef float jim_float;
+typedef double jim_double;
+
+/*----------------------------------------------------------------------------
+| Integer-to-floating-point conversion routines.
+*----------------------------------------------------------------------------*/
+static inline jim_float jim_wide_to_float( jim_wide w )
+{
+    return (jim_float)w;
+}
+static inline jim_double jim_wide_to_double( jim_wide w )
+{
+    return (jim_double)w;
+}
+
+/*----------------------------------------------------------------------------
+| 32-bit (single-precision) floating-point operations.
+*----------------------------------------------------------------------------*/
+static inline jim_wide jim_float_to_wide( jim_float f )
+{
+    return (jim_wide)f;
+}
+static inline jim_double jim_float_to_double( jim_float f )
+{
+    return (jim_double)f;
+}
+
+static inline jim_float jim_float_add( jim_float f1, jim_float f2 )
+{
+    return f1 + f2;
+}
+static inline jim_float jim_float_sub( jim_float f1, jim_float f2 )
+{
+    return f1 - f2;
+}
+static inline jim_float jim_float_mul( jim_float f1, jim_float f2 )
+{
+    return f1 * f2;
+}
+static inline jim_float jim_float_div( jim_float f1, jim_float f2 )
+{
+    return f1 / f2;
+}
+static inline jim_float jim_float_rem( jim_float f1, jim_float f2 )
+{
+    return f1 % f2;
+}
+
+static inline int jim_float_eq( jim_float f1, jim_float f2 )
+{
+    return f1 == f2;
+}
+static inline int jim_float_le( jim_float f1, jim_float f2 )
+{
+    return f1 <= f2;
+}
+static inline int jim_float_lt( jim_float f1, jim_float f2 )
+{
+    return f1 < f2;
+}
+static inline int jim_float_neq( jim_float f1, jim_float f2 )
+{
+    return f1 != f2;
+}
+static inline int jim_float_ge( jim_float f1, jim_float f2 )
+{
+    return f1 >= f2;
+}
+static inline int jim_float_gt( jim_float f1, jim_float f2 )
+{
+    return f1 > f2;
+}
+
+int jim_float_isnan( jim_float );
+int jim_float_isinf( jim_float );
+
+jim_float jim_float_sin( jim_float );
+jim_float jim_float_cos( jim_float );
+jim_float jim_float_tan( jim_float );
+jim_float jim_float_asin( jim_float );
+jim_float jim_float_acos( jim_float );
+jim_float jim_float_atan( jim_float );
+jim_float jim_float_atan2( jim_float );
+jim_float jim_float_sinh( jim_float );
+jim_float jim_float_cosh( jim_float );
+jim_float jim_float_tanh( jim_float );
+jim_float jim_float_ceil( jim_float );
+jim_float jim_float_floor( jim_float );
+jim_float jim_float_exp( jim_float );
+jim_float jim_float_log( jim_float );
+jim_float jim_float_log10( jim_float );
+jim_float jim_float_sqrt( jim_float );
+jim_float jim_float_pow( jim_float );
+jim_float jim_float_hypot( jim_float );
+jim_float jim_float_fmod( jim_float );
+
+jim_float jim_strtof( const char *, char ** );
+int jim_stof( jim_float, char *, unsigned int );
+
+#else
+#include <jim-softfloat.h>
+#endif
+
+#endif
