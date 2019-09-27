@@ -191,6 +191,17 @@ jim_double jim_double_fmod( jim_double );
 jim_double jim_strtod( const char *, char ** );
 int jim_stod( jim_double, char *, unsigned int );
 
+/*----------------------------------------------------------------------------
+| jimtcl soft float/double commonly used constants
+*----------------------------------------------------------------------------*/
+
+#define JIM_DOUBLE_ZERO 0.0
+#define JIM_DOUBLE_ONE 1.0
+#define JIM_DOUBLE_MINUSONE -1.0
+#define JIM_DOUBLE_HALF 0.5
+#define JIM_DOUBLE_THOUSAND 1e3
+#define JIM_DOUBLE_MILLION 1e6
+
 #else
 #include <jim-softfloat.h>
 #endif
