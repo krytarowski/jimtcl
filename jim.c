@@ -67,8 +67,15 @@
 #define jim_isinf isinf
 #define jim_lt(a,b) (a < b)
 #define jim_gt(a,b) (a > b)
+#define jim_ge(a,b) (a >= b)
 #define jim_eq(a,b) (a == b)
+#define jim_add(a,b) (a+b)
+#define jim_sub(a,b) (a-b)
+#define jim_mul(a,b) (a*b)
+#define jim_div(a,b) (a/b)
 #define jim_zero 0
+#define jim_minusone -1
+#define jim_half 0.5
 #define jim_wide_to_double(a) ((jim_double)(a))
 #define jim_double_to_wide(a) ((jim_wide)(a))
 #else
@@ -78,10 +85,17 @@
 #define jim_isinf(a) 0
 #define jim_lt(a,b) jim_f64_lt(a, b)
 #define jim_gt(a,b) jim_f64_lt(b, a)
+#define jim_ge(a,b) jim_f64_le(b, a)
 #define jim_eq(a,b) jim_f64_eq(a, b)
+#define jim_add(a,b) (jim_f64_add((a),(b)))
+#define jim_sub(a,b) (jim_f64_sub((a),(b)))
+#define jim_mul(a,b) (jim_f64_mul((a),(b)))
+#define jim_div(a,b) (jim_f64_div((a),(b)))
 #define jim_zero (jim_i32_to_f64(0))
+#define jim_minusone (jim_i32_to_f64(-1))
+#define jim_half (jim_f64_div(jim_i32_to_f64(1), jim_i32_to_f64(2)))
 #define jim_wide_to_double(a) (jim_i64_to_f64(a))
-#define jim_double_to_wide(a) (jim_f64_to_i64(a))
+#define jim_double_to_wide(a) (jim_f64_to_i64(a, jim_softfloat_round_near_even, 1))
 #endif
 
 #ifdef HAVE_SYS_TIME_H
@@ -7806,7 +7820,7 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
                 wC = jim_double_to_wide(dA);
                 break;
             case JIM_EXPROP_FUNC_ROUND:
-                wC = dA < 0 ? (dA - 0.5) : (dA + 0.5);
+                wC = jim_double_to_wide(jim_lt(dA, jim_zero) ? jim_f64_sub(dA, jim_half) : jim_f64_add(dA, jim_half));
                 break;
             case JIM_EXPROP_FUNC_DOUBLE:
             case JIM_EXPROP_UNARYPLUS:
@@ -7817,16 +7831,16 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
 #ifdef JIM_MATH_FUNCTIONS
                 dC = fabs(dA);
 #else
-                dC = dA >= 0 ? dA : -dA;
+                dC = jim_ge(dA, jim_zero) ? dA : jim_mul(dA, jim_minusone);
 #endif
                 intresult = 0;
                 break;
             case JIM_EXPROP_UNARYMINUS:
-                dC = -dA;
+                dC = jim_mul(dA, jim_minusone);
                 intresult = 0;
                 break;
             case JIM_EXPROP_NOT:
-                wC = !dA;
+                wC = jim_eq(dA, jim_zero);
                 break;
             default:
                 abort();
@@ -7849,10 +7863,10 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
 
 static jim_double JimRandDouble(Jim_Interp *interp)
 {
-    unsigned long x;
+    jim_double x;
     JimRandomBytes(interp, &x, sizeof(x));
 
-    return (double)x / (unsigned long)~0;
+    return x;
 }
 
 static int JimExprOpIntUnary(Jim_Interp *interp, struct JimExprNode *node)
@@ -8067,7 +8081,7 @@ static int JimExprOpIntBin(Jim_Interp *interp, struct JimExprNode *node)
 static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
 {
     int rc = JIM_OK;
-    jim_double dA, dB, dC = 0;
+    jim_double dA, dB, dC = jim_zero;
     jim_wide wA, wB, wC = 0;
     Jim_Obj *A, *B;
 
@@ -8176,24 +8190,24 @@ static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
                 goto doubleresult;
 #endif
             case JIM_EXPROP_ADD:
-                dC = dA + dB;
+                dC = jim_add(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_SUB:
-                dC = dA - dB;
+                dC = jim_sub(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_MUL:
-                dC = dA * dB;
+                dC = jim_mul(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_DIV:
-                if (dB == 0) {
+                if (jim_eq(dB, jim_zero)) {
 #ifdef INFINITY
                     dC = dA < 0 ? -INFINITY : INFINITY;
 #else
-                    dC = (dA < 0 ? -1.0 : 1.0) * strtod("Inf", NULL);
+                    dC = (dA < 0 ? -1.0 : 1.0) * jim_strtod("Inf", NULL);
 #endif
                 }
                 else {
-                    dC = dA / dB;
+                    dC = jim_div(dA, dB);
                 }
                 goto doubleresult;
             case JIM_EXPROP_LT:
