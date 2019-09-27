@@ -15,6 +15,7 @@ options {
     utf8            => "include support for utf8-encoded strings"
     lineedit=1      => "disable line editing"
     references=1    => "disable support for references"
+    softfloat       => "enable SoftFloat IEEE emulation"
     math            => "include support for math functions"
     ssl             => "include ssl/tls support in the aio extension"
     ipv6            => "include ipv6 support in the aio extension"
@@ -300,6 +301,10 @@ if {[opt-bool-or-full lineedit]} {
 if {[opt-bool references]} {
     msg-result "Enabling references"
     define JIM_REFERENCES
+}
+if {[opt-bool softfloat]} {
+    msg-result "Enabling SoftFloat IEEE emulation"
+    define DEFINE_HAVE_SOFTFLOAT
 }
 if {[opt-bool shared with-jim-shared]} {
     msg-result "Building shared library"
