@@ -137,11 +137,14 @@ float16_t
  softfloat_mulAddF16(
      uint_fast16_t, uint_fast16_t, uint_fast16_t, uint_fast8_t );
 
+#endif
+
 /*----------------------------------------------------------------------------
 *----------------------------------------------------------------------------*/
 #define signF32UI( a ) ((bool) ((uint32_t) (a)>>31))
 #define expF32UI( a ) ((int_fast16_t) ((a)>>23) & 0xFF)
 #define fracF32UI( a ) ((a) & 0x007FFFFF)
+
 #define packToF32UI( sign, exp, sig ) (((uint32_t) (sign)<<31) + ((uint32_t) (exp)<<23) + (sig))
 
 #define isNaNF32UI( a ) (((~(a) & 0x7F800000) == 0) && ((a) & 0x007FFFFF))
@@ -167,18 +170,6 @@ float32_t
 
 #define isNaNF64UI( a ) (((~(a) & UINT64_C( 0x7FF0000000000000 )) == 0) && ((a) & UINT64_C( 0x000FFFFFFFFFFFFF )))
 
-static inline
-jim_isnan(jim_double d)
-{
-        return jim_isNaNF64UI(a);
-}
-
-static inline jim_double
-jim_infinity(void)
-{
-	return packToF64UI(0, 0x7FF, 0);
-}
-
 struct exp16_sig64 { int_fast16_t exp; uint_fast64_t sig; };
 struct exp16_sig64 softfloat_normSubnormalF64Sig( uint_fast64_t );
 
@@ -190,6 +181,8 @@ float64_t softfloat_subMagsF64( uint_fast64_t, uint_fast64_t, bool );
 float64_t
  softfloat_mulAddF64(
      uint_fast64_t, uint_fast64_t, uint_fast64_t, uint_fast8_t );
+
+#if 0
 
 /*----------------------------------------------------------------------------
 *----------------------------------------------------------------------------*/

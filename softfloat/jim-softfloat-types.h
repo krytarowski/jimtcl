@@ -79,4 +79,7 @@ typedef signed long long jim_int_fast64_t;
 
 typedef int jim_bool;
 
+typedef jim_float jim_float32_t;
+typedef jim_double jim_float64_t;
+
 #endif
