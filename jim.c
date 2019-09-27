@@ -76,6 +76,7 @@
 #define jim_mul(a,b) (a*b)
 #define jim_div(a,b) (a/b)
 #define jim_zero 0
+#define jim_one 1
 #define jim_minusone -1
 #define jim_half 0.5
 #define jim_wide_to_double(a) ((jim_double)(a))
@@ -96,6 +97,7 @@
 #define jim_mul(a,b) (jim_f64_mul((a),(b)))
 #define jim_div(a,b) (jim_f64_div((a),(b)))
 #define jim_zero (jim_i32_to_f64(0))
+#define jim_one (jim_i32_to_f64(1))
 #define jim_minusone (jim_i32_to_f64(-1))
 #define jim_half (jim_f64_div(jim_i32_to_f64(1), jim_i32_to_f64(2)))
 #define jim_wide_to_double(a) (jim_i64_to_f64(a))
@@ -11417,9 +11419,9 @@ static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
         if (Jim_GetDouble(interp, argv[i], &doubleValue) != JIM_OK)
             return JIM_ERR;
         if (op == JIM_EXPROP_ADD)
-            doubleRes += doubleValue;
+            doubleRes = jim_add(doubleRes, doubleValue);
         else
-            doubleRes *= doubleValue;
+            doubleRes = jim_mul(doubleRes, doubleValue);
     }
     Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
     return JIM_OK;
@@ -11429,7 +11431,7 @@ static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
 static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, int op)
 {
     jim_wide wideValue, res = 0;
-    jim_double doubleValue, doubleRes = 0;
+    jim_double doubleValue, doubleRes = jim_zero;
     int i = 2;
 
     if (argc < 2) {
@@ -11445,9 +11447,9 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
             }
             else {
                 if (op == JIM_EXPROP_SUB)
-                    doubleRes = -doubleValue;
+                    doubleRes = jim_mul(jim_minusone, doubleValue);
                 else
-                    doubleRes = 1.0 / doubleValue;
+                    doubleRes = jim_div(jim_one, doubleValue);
                 Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
                 return JIM_OK;
             }
@@ -11457,7 +11459,7 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
             Jim_SetResultInt(interp, res);
         }
         else {
-            doubleRes = 1.0 / wideValue;
+            doubleRes = jim_div(jim_one, jim_wide_to_double(wideValue));
             Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
         }
         return JIM_OK;
@@ -11475,7 +11477,7 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
     }
     for (i = 2; i < argc; i++) {
         if (Jim_GetWide(interp, argv[i], &wideValue) != JIM_OK) {
-            doubleRes = (double)res;
+            doubleRes = jim_wide_to_double(res);
             goto trydouble;
         }
         if (op == JIM_EXPROP_SUB)
@@ -11495,9 +11497,9 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
         if (Jim_GetDouble(interp, argv[i], &doubleValue) != JIM_OK)
             return JIM_ERR;
         if (op == JIM_EXPROP_SUB)
-            doubleRes -= doubleValue;
+            doubleRes = jim_sub(doubleRes, doubleValue);
         else
-            doubleRes /= doubleValue;
+            doubleRes = jim_div(doubleRes, doubleValue);
     }
     Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
     return JIM_OK;
