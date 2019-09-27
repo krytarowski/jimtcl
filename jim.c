@@ -61,6 +61,17 @@
 #include "jimautoconf.h"
 #include "utf8.h"
 
+#ifndef HAVE_SOFTFLOAT
+#define jim_strtod strtod
+#define jim_isnan isnan
+#define jim_isinf isinf
+#else
+#include "jim-softfloat-internals.h"
+#define jim_strtod(a,b) (*(jim_double *)0)
+#define jim_isnan(a) 0
+#define jim_isinf(a) 0
+#endif
+
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -71,8 +82,10 @@
 #include <crt_externs.h>
 #endif
 
+#ifndef HAVE_SOFTFLOAT
 /* For INFINITY, even if math functions are not enabled */
 #include <math.h>
+#endif
 
 /* We may decide to switch to using $[...] after all, so leave it as an option */
 /*#define EXPRSUGAR_BRACKET*/
@@ -571,7 +584,7 @@ int Jim_StringToDouble(const char *str, jim_double *doublePtr)
     /* Callers can check for underflow via ERANGE */
     errno = 0;
 
-    *doublePtr = strtod(str, &endptr);
+    *doublePtr = jim_strtod(str, &endptr);
 
     return JimCheckConversion(str, endptr);
 }
@@ -6014,23 +6027,23 @@ static const Jim_ObjType doubleObjType = {
 };
 
 #ifndef HAVE_ISNAN
-#undef isnan
-#define isnan(X) ((X) != (X))
+#undef jim_isnan
+#define jim_isnan(X) ((X) != (X))
 #endif
 #ifndef HAVE_ISINF
-#undef isinf
-#define isinf(X) (1.0 / (X) == 0.0)
+#undef jim_isinf
+#define jim_isinf(X) (1.0 / (X) == 0.0)
 #endif
 
 static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
 {
     jim_double value = objPtr->internalRep.doubleValue;
 
-    if (isnan(value)) {
+    if (jim_isnan(value)) {
         JimSetStringBytes(objPtr, "NaN");
         return;
     }
-    if (isinf(value)) {
+    if (jim_isinf(value)) {
         if (value < 0) {
             JimSetStringBytes(objPtr, "-Inf");
         }

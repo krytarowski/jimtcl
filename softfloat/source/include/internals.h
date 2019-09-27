@@ -127,7 +127,13 @@ float32_t
 #define fracF64UI( a ) ((a) & UINT64_C( 0x000FFFFFFFFFFFFF ))
 #define packToF64UI( sign, exp, sig ) ((uint64_t) (((uint_fast64_t) (sign)<<63) + ((uint_fast64_t) (exp)<<52) + (sig)))
 
-#define isNaNF64UI( a ) (((~(a) & UINT64_C( 0x7FF0000000000000 )) == 0) && ((a) & UINT64_C( 0x000FFFFFFFFFFFFF )))
+#define jim_isNaNF64UI( a ) (((~(a) & UINT64_C( 0x7FF0000000000000 )) == 0) && ((a) & UINT64_C( 0x000FFFFFFFFFFFFF )))
+
+static inline
+jim_isnan(jim_double d)
+{
+	return jim_isNaNF64UI(a);
+}
 
 struct exp16_sig64 { int_fast16_t exp; uint_fast64_t sig; };
 struct exp16_sig64 softfloat_normSubnormalF64Sig( uint_fast64_t );
@@ -275,4 +281,3 @@ void
 #endif
 
 #endif
-

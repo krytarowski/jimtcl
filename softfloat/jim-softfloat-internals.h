@@ -44,13 +44,15 @@ union jim_ui32_f32 { jim_uint32_t ui; jim_float f; };
 union jim_ui64_f64 { jim_uint64_t ui; jim_double f; };
 
 enum {
-    softfloat_mulAdd_subC    = 1,
-    softfloat_mulAdd_subProd = 2
+    jim_softfloat_mulAdd_subC    = 1,
+    jim_softfloat_mulAdd_subProd = 2
 };
+
+#if 0
 
 /*----------------------------------------------------------------------------
 *----------------------------------------------------------------------------*/
-uint_fast32_t softfloat_roundToUI32( bool, uint_fast64_t, uint_fast8_t, bool );
+jim_uint32_t softfloat_roundToUI32( int, jim_uint64_t, jim_uint8_t, bool );
 
 #ifdef SOFTFLOAT_FAST_INT64
 uint_fast64_t
@@ -120,6 +122,12 @@ float32_t
 #define packToF64UI( sign, exp, sig ) ((uint64_t) (((uint_fast64_t) (sign)<<63) + ((uint_fast64_t) (exp)<<52) + (sig)))
 
 #define isNaNF64UI( a ) (((~(a) & UINT64_C( 0x7FF0000000000000 )) == 0) && ((a) & UINT64_C( 0x000FFFFFFFFFFFFF )))
+
+static inline
+jim_isnan(jim_double d)
+{
+        return jim_isNaNF64UI(a);
+}
 
 struct exp16_sig64 { int_fast16_t exp; uint_fast64_t sig; };
 struct exp16_sig64 softfloat_normSubnormalF64Sig( uint_fast64_t );
@@ -263,6 +271,8 @@ void
      uint32_t *,
      uint_fast8_t
  );
+
+#endif
 
 #endif
 

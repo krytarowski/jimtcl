@@ -20,7 +20,7 @@ extern double fltTen;
 extern double fltSmall;
 extern int fltNotInited;
 
-double jim_strtod(const char *str, char **end) {
+jim_double jim_strtod(const char *str, char **end) {
   double d = ctof(0);
   int isNegative = 0, sign = 1;
   int n = 0;

@@ -37,9 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef primitives_h
 #define primitives_h 1
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "primitiveTypes.h"
+#include "jim.h"
+#include "jim-softfloat.h"
+
+#if 0
 
 #ifndef softfloat_shortShiftRightJam64
 /*----------------------------------------------------------------------------
@@ -49,9 +50,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 | significant bit to 1.  This shifted-and-jammed value is returned.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
-INLINE
-uint64_t softfloat_shortShiftRightJam64( uint64_t a, uint_fast8_t dist )
-    { return a>>dist | ((a & (((uint_fast64_t) 1<<dist) - 1)) != 0); }
+jim_uint64_t softfloat_shortShiftRightJam64( jim_uint64_t a, jim_uint8_t dist )
+    { return a>>dist | ((a & (((jim_uint64_t) 1<<dist) - 1)) != 0); }
 #else
 uint64_t softfloat_shortShiftRightJam64( uint64_t a, uint_fast8_t dist );
 #endif
@@ -554,11 +554,11 @@ void
 #if defined INLINE_LEVEL && (3 <= INLINE_LEVEL)
 INLINE struct uint128 softfloat_mul64ByShifted32To128( uint64_t a, uint32_t b )
 {
-    uint_fast64_t mid;
+    jim_uint64_t mid;
     struct uint128 z;
-    mid = (uint_fast64_t) (uint32_t) a * b;
+    mid = (jim_uint64_t) (uint32_t) a * b;
     z.v0 = mid<<32;
-    z.v64 = (uint_fast64_t) (uint32_t) (a>>32) * b + (mid>>32);
+    z.v64 = (jim_uint64_t) (uint32_t) (a>>32) * b + (mid>>32);
     return z;
 }
 #else
@@ -581,15 +581,15 @@ struct uint128 softfloat_mul64To128( uint64_t a, uint64_t b );
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (4 <= INLINE_LEVEL)
 INLINE
-struct uint128 softfloat_mul128By32( uint64_t a64, uint64_t a0, uint32_t b )
+struct uint128 softfloat_mul128By32( jim_uint64_t a64, jim_uint64_t a0, jim_uint32_t b )
 {
     struct uint128 z;
-    uint_fast64_t mid;
+    jim_uint64_t mid;
     uint_fast32_t carry;
     z.v0 = a0 * b;
-    mid = (uint_fast64_t) (uint32_t) (a0>>32) * b;
-    carry = (uint32_t) ((uint_fast32_t) (z.v0>>32) - (uint_fast32_t) mid);
-    z.v64 = a64 * b + (uint_fast32_t) ((mid + carry)>>32);
+    mid = (jim_uint64_t) (jim_uint32_t) (a0>>32) * b;
+    carry = (uint32_t) ((jim_uint32_t) (z.v0>>32) - (jim_uint32_t) mid);
+    z.v64 = a64 * b + (jim_uint32_t) ((mid + carry)>>32);
     return z;
 }
 #else
@@ -1158,3 +1158,4 @@ void
 
 #endif
 
+#endif
