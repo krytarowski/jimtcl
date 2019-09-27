@@ -31,15 +31,6 @@ jim_float jim_float_sin( jim_float f )
 #endif
 }
 
-jim_float jim_float_sin( jim_float f )
-{
-#ifdef JIM_MATH_FUNCTIONS
-    return sin(f);
-#else
-    abort();
-#endif
-}
-
 jim_float jim_float_cos( jim_float f )
 {
 #ifdef JIM_MATH_FUNCTIONS
@@ -220,15 +211,6 @@ int jim_double_isnan( jim_double d )
 int jim_double_isinf( jim_double d )
 {
     return isinf(d);
-}
-
-jim_double jim_double_sin( jim_double d )
-{
-#ifdef JIM_MATH_FUNCTIONS
-    return sin(d);
-#else
-    abort();
-#endif
 }
 
 jim_double jim_double_sin( jim_double d )
