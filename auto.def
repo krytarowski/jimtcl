@@ -307,7 +307,7 @@ if {[opt-bool softfloat]} {
     msg-result "Enabling SoftFloat IEEE emulation"
     define HAVE_SOFTFLOAT
     define-append CPPFLAGS -Isoftfloat/
-    lappend extra_objs softfloat/ui32_to_f32.o
+    lappend extra_objs softfloat/jim-ui32_to_f32.o
 }
 if {[opt-bool shared with-jim-shared]} {
     msg-result "Building shared library"
