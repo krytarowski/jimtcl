@@ -107,6 +107,90 @@ jim_float jim_float_fmod( jim_float );
 jim_float jim_strtof( const char *, char ** );
 int jim_stof( jim_float, char *, unsigned int );
 
+/*----------------------------------------------------------------------------
+| 64-bit (double-precision) floating-point operations.
+*----------------------------------------------------------------------------*/
+static inline jim_wide jim_double_to_wide( jim_double f )
+{
+    return (jim_wide)f;
+}
+static inline jim_float jim_double_to_float( jim_double f )
+{
+    return (jim_float)f;
+}
+
+static inline jim_double jim_double_add( jim_double f1, jim_double f2 )
+{
+    return f1 + f2;
+}
+static inline jim_double jim_double_sub( jim_double f1, jim_double f2 )
+{
+    return f1 - f2;
+}
+static inline jim_double jim_double_mul( jim_double f1, jim_double f2 )
+{
+    return f1 * f2;
+}
+static inline jim_double jim_double_div( jim_double f1, jim_double f2 )
+{
+    return f1 / f2;
+}
+static inline jim_double jim_double_rem( jim_double f1, jim_double f2 )
+{
+    return f1 % f2;
+}
+
+static inline int jim_double_eq( jim_double f1, jim_double f2 )
+{
+    return f1 == f2;
+}
+static inline int jim_double_le( jim_double f1, jim_double f2 )
+{
+    return f1 <= f2;
+}
+static inline int jim_double_lt( jim_double f1, jim_double f2 )
+{
+    return f1 < f2;
+}
+static inline int jim_double_neq( jim_double f1, jim_double f2 )
+{
+    return f1 != f2;
+}
+static inline int jim_double_ge( jim_double f1, jim_double f2 )
+{
+    return f1 >= f2;
+}
+static inline int jim_double_gt( jim_double f1, jim_double f2 )
+{
+    return f1 > f2;
+}
+
+int jim_double_isnan( jim_double );
+int jim_double_isinf( jim_double );
+
+jim_double jim_double_sin( jim_double );
+jim_double jim_double_cos( jim_double );
+jim_double jim_double_tan( jim_double );
+jim_double jim_double_asin( jim_double );
+jim_double jim_double_acos( jim_double );
+jim_double jim_double_atan( jim_double );
+jim_double jim_double_atan2( jim_double );
+jim_double jim_double_sinh( jim_double );
+jim_double jim_double_cosh( jim_double );
+jim_double jim_double_tanh( jim_double );
+jim_double jim_double_ceil( jim_double );
+jim_double jim_double_floor( jim_double );
+jim_double jim_double_exp( jim_double );
+jim_double jim_double_log( jim_double );
+jim_double jim_double_log10( jim_double );
+jim_double jim_double_sqrt( jim_double );
+jim_double jim_double_pow( jim_double );
+jim_double jim_double_hypot( jim_double );
+jim_double jim_double_fmod( jim_double );
+
+jim_double jim_strtod( const char *, char ** );
+int jim_stod( jim_double, char *, unsigned int );
+
 #else
 #include <jim-softfloat.h>
 #endif
