@@ -127,10 +127,14 @@ jim_float jim_float_pow( jim_float );
 jim_float jim_float_hypot( jim_float );
 jim_float jim_float_fmod( jim_float );
 
+jim_float jim_strtof( const char *, char ** );
+int jim_stof( jim_float, char *, unsigned int );
+
 /*----------------------------------------------------------------------------
 | 64-bit (double-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-jim_wide jim_double_to_wide( jim_double, jim_uint8_t, int );
+
+jim_wide jim_double_to_wide( jim_double );
 jim_float jim_double_to_float( jim_double );
 
 jim_double jim_double_add( jim_double, jim_double );
@@ -168,6 +172,20 @@ jim_double jim_double_sqrt( jim_double );
 jim_double jim_double_pow( jim_double );
 jim_double jim_double_hypot( jim_double );
 jim_double jim_double_fmod( jim_double );
+
+jim_double jim_strtod( const char *, char ** );
+int jim_stof( jim_float, char *, unsigned int );
+
+/*----------------------------------------------------------------------------
+| jimtcl soft float/double commonly used constants
+*----------------------------------------------------------------------------*/
+
+#define JIM_DOUBLE_ZERO jim_wide_to_double(0)
+#define JIM_DOUBLE_ONE jim_wide_to_double(1)
+#define JIM_DOUBLE_MINUSONE jim_wide_to_double(-1)
+#define JIM_DOUBLE_HALF jim_double_div(jim_wide_to_double(1), jim_wide_to_double(2))
+#define JIM_DOUBLE_THOUSAND jim_wide_to_double(1000)
+#define JIM_DOUBLE_MILLION jim_wide_to_double(1000000)
 
 #ifdef __cplusplus
 }
