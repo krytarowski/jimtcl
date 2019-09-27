@@ -207,207 +207,207 @@ jim_float jim_strtof( const char *nptr, char **endptr )
     return strtof(nptr, endptr);
 }
 
-int jim_stof( jim_float f, char *str, unsigned int len )
+int jim_stof( jim_float f, const char *format, char *str, unsigned int len )
 {
-    return snprintf(str, len, "%g", f);
+    return snprintf(str, len, format, f);
 }
 
-int jim_double_isnan( jim_double f )
+int jim_double_isnan( jim_double d )
 {
-    return isnan(f);
+    return isnan(d);
 }
 
-int jim_double_isinf( jim_double f )
+int jim_double_isinf( jim_double d )
 {
-    return isinf(f);
+    return isinf(d);
 }
 
-jim_double jim_double_sin( jim_double f )
+jim_double jim_double_sin( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return sin(f);
+    return sin(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_sin( jim_double f )
+jim_double jim_double_sin( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return sin(f);
+    return sin(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_cos( jim_double f )
+jim_double jim_double_cos( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return cos(f);
+    return cos(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_tan( jim_double f )
+jim_double jim_double_tan( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return tan(f);
+    return tan(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_asin( jim_double f )
+jim_double jim_double_asin( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return asin(f);
+    return asin(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_acos( jim_double f )
+jim_double jim_double_acos( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return acos(f);
+    return acos(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_atan( jim_double f )
+jim_double jim_double_atan( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return atan(f);
+    return atan(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_atan2( jim_double f )
+jim_double jim_double_atan2( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return atan2(f);
+    return atan2(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_sinh( jim_double f )
+jim_double jim_double_sinh( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return sinh(f);
+    return sinh(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_cosh( jim_double f )
+jim_double jim_double_cosh( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return cosh(f);
+    return cosh(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_tanh( jim_double f )
+jim_double jim_double_tanh( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return tanh(f);
+    return tanh(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_ceil( jim_double f )
+jim_double jim_double_ceil( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return ceil(f);
+    return ceil(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_floor( jim_double f )
+jim_double jim_double_floor( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return floor(f);
+    return floor(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_exp( jim_double f )
+jim_double jim_double_exp( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return exp(f);
+    return exp(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_log( jim_double f )
+jim_double jim_double_log( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return log(f);
+    return log(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_log10( jim_double f )
+jim_double jim_double_log10( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return log10(f);
+    return log10(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_sqrt( jim_double f )
+jim_double jim_double_sqrt( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return sqrt(f);
+    return sqrt(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_pow( jim_double f )
+jim_double jim_double_pow( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return pow(f);
+    return pow(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_hypot( jim_double f )
+jim_double jim_double_hypot( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return hypot(f);
+    return hypot(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_double_fmod( jim_double f )
+jim_double jim_double_fmod( jim_double d )
 {
 #ifdef JIM_MATH_FUNCTIONS
-    return fmod(f);
+    return fmod(d);
 #else
     abort();
 #endif
 }
 
-jim_double jim_strtof( const char *nptr, char **endptr )
+jim_double jim_strtod( const char *nptr, char **endptr )
 {
-    return strtof(nptr, endptr);
+    return strtod(nptr, endptr);
 }
 
-int jim_stof( jim_double f, const char *format, char *str, unsigned int len )
+int jim_stod( jim_double d, const char *format, char *str, unsigned int len )
 {
-    return snprintf(str, len, "%g", f);
+    return snprintf(str, len, format, d);
 }
