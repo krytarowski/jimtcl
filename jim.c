@@ -6047,7 +6047,7 @@ static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
     {
         char buf[JIM_DOUBLE_SPACE + 1];
         int i;
-        int len = sprintf(buf, "%.12g", value);
+        int len = jim_stod(value, "%.12g", buf, sizeof(buf));
 
         /* Add a final ".0" if necessary */
         for (i = 0; i < len; i++) {
