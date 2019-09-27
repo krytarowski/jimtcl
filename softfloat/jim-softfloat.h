@@ -56,38 +56,14 @@ extern "C" {
 #endif
 
 /*----------------------------------------------------------------------------
-| Auxiliary types.
-*----------------------------------------------------------------------------*/
-
-typedef unsigned char jim_uint8_t;
-typedef unsigned short jim_uint16_t;
-typedef unsigned int jim_uint32_t;
-typedef unsigned long long jim_uint64_t;
-
-typedef signed char jim_int8_t;
-typedef signed short jim_int16_t;
-typedef signed int jim_int32_t;
-typedef signed long long jim_int64_t;
-
-JIM_CTASSERT(sizeof(jim_uint8_t) == 1);
-JIM_CTASSERT(sizeof(jim_uint16_t) == 2);
-JIM_CTASSERT(sizeof(jim_uint32_t) == 4);
-JIM_CTASSERT(sizeof(jim_uint64_t) == 8);
-
-JIM_CTASSERT(sizeof(jim_int8_t) == 1);
-JIM_CTASSERT(sizeof(jim_int16_t) == 2);
-JIM_CTASSERT(sizeof(jim_int32_t) == 4);
-JIM_CTASSERT(sizeof(jim_int64_t) == 8);
-
-/*----------------------------------------------------------------------------
 | jimtcl soft float/double
 *----------------------------------------------------------------------------*/
 
-typedef struct { jim_uint32_t v; } jim_float;
-typedef struct { jim_uint64_t v; } jim_double;
+typedef struct { unsigned int v; } jim_float;
+typedef struct { unsigned long long int v; } jim_double;
 
-JIM_CTASSERT(sizeof(jim_uint32_t) == sizeof(jim_float));
-JIM_CTASSERT(sizeof(jim_uint64_t) == sizeof(jim_double));
+JIM_CTASSERT(sizeof(jim_float) == 4);
+JIM_CTASSERT(sizeof(jim_double) == 8);
 
 /*----------------------------------------------------------------------------
 | Integer-to-floating-point conversion routines.

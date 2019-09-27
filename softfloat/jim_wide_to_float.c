@@ -34,13 +34,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
+#include "jim.h"
+
 #include <stdbool.h>
 #include <stdint.h>
 #include "platform.h"
 #include "internals.h"
 #include "softfloat.h"
 
-float32_t i64_to_f32( int64_t a )
+jim_float jim_wide_to_float( jim_wide a )
 {
     bool sign;
     uint_fast64_t absA;
@@ -67,4 +69,3 @@ float32_t i64_to_f32( int64_t a )
     }
 
 }
-
