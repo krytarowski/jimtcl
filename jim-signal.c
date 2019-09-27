@@ -437,12 +437,12 @@ static int Jim_AlarmCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
     }
     else {
 #ifdef HAVE_UALARM
-        double t;
+        jim_double t;
 
         ret = Jim_GetDouble(interp, argv[1], &t);
         if (ret == JIM_OK) {
-            if (t < 1) {
-                ualarm(t * 1e6, 0);
+            if (jim_lt(t, jim_one)) {
+                ualarm(jim_double_to_wide(jim_mul(t,jim_million)), 0);
             }
             else {
                 alarm(t);
@@ -453,7 +453,7 @@ static int Jim_AlarmCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
 
         ret = Jim_GetLong(interp, argv[1], &t);
         if (ret == JIM_OK) {
-            alarm(t);
+            alarm(jim_double_to_wide(t));
         }
 #endif
     }

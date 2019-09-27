@@ -3,8 +3,10 @@
 
 #ifndef HAVE_SOFTFLOAT
 #define jim_float_to_double(a) ((double)(a))
+#define jim_double_to_float(a) ((float)(a))
 #else
 #define jim_float_to_double(a) (jim_f32_to_f64(a))
+#define jim_double_to_float(a) (jim_f64_to_f32(a))
 #endif
 
 /* Provides the [pack] and [unpack] commands to pack and unpack
@@ -207,12 +209,12 @@ static void JimSetBitsIntLittleEndian(unsigned char *bitvec, jim_wide value, int
 static jim_float JimIntToFloat(jim_wide value)
 {
     int offs;
-    float val;
+    jim_float val;
 
     /* Skip offs to get to least significant bytes */
-    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(float)) : 0;
+    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(jim_float)) : 0;
 
-    memcpy(&val, (unsigned char *) &value + offs, sizeof(float));
+    memcpy(&val, (unsigned char *) &value + offs, sizeof(jim_float));
     return val;
 }
 
@@ -383,7 +385,7 @@ static int Jim_PackCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
     jim_wide pos = 0;
     jim_wide width;
     jim_wide value;
-    double fvalue;
+    jim_double fvalue;
     Jim_Obj *stringObjPtr;
     int len;
     int freeobj = 0;
@@ -454,7 +456,7 @@ static int Jim_PackCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
          * In Tcl floating overflow gives FLT_MAX (cf. test binary-13.13).
          * In Jim Tcl it gives Infinity. This behavior may change.
          */
-        value = (width == 32) ? JimFloatToInt((float)fvalue) : JimDoubleToInt(fvalue);
+        value = (width == 32) ? JimFloatToInt(jim_double_to_float(fvalue)) : JimDoubleToInt(fvalue);
     }
 
     if (option == OPT_BE || option == OPT_FLOATBE) {
