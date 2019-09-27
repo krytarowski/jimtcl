@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define primitives_h 1
 
 #include "jim.h"
-#include "jim-softfloat.h"
+#include "jim-softfloat-internals.h"
 
 #if 0
 
@@ -152,13 +152,17 @@ uint_fast8_t softfloat_countLeadingZeros32( uint32_t a );
 #endif
 #endif
 
-#ifndef softfloat_countLeadingZeros64
+#endif
+
+#ifndef jim_softfloat_countLeadingZeros64
 /*----------------------------------------------------------------------------
 | Returns the number of leading 0 bits before the most-significant 1 bit of
 | 'a'.  If 'a' is zero, 64 is returned.
 *----------------------------------------------------------------------------*/
-uint_fast8_t softfloat_countLeadingZeros64( uint64_t a );
+jim_uint_fast8_t jim_softfloat_countLeadingZeros64( jim_uint64_t a );
 #endif
+
+#if 0
 
 extern const uint16_t softfloat_approxRecip_1k0s[16];
 extern const uint16_t softfloat_approxRecip_1k1s[16];

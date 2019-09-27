@@ -40,28 +40,28 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 jim_float jim_wide_to_float( jim_wide a )
 {
-    bool sign;
-    uint_fast64_t absA;
-    int_fast8_t shiftDist;
-    union ui32_f32 u;
-    uint_fast32_t sig;
+    jim_bool sign;
+    jim_uint_fast64_t absA;
+    jim_int_fast8_t shiftDist;
+    union jim_ui32_f32 u;
+    jim_uint_fast32_t sig;
 
     sign = (a < 0);
-    absA = sign ? -(uint_fast64_t) a : (uint_fast64_t) a;
-    shiftDist = softfloat_countLeadingZeros64( absA ) - 40;
+    absA = sign ? -(jim_uint_fast64_t) a : (jim_uint_fast64_t) a;
+    shiftDist = jim_softfloat_countLeadingZeros64( absA ) - 40;
     if ( 0 <= shiftDist ) {
         u.ui =
-            a ? packToF32UI(
-                    sign, 0x95 - shiftDist, (uint_fast32_t) absA<<shiftDist )
+            a ? jim_packToF32UI(
+                    sign, 0x95 - shiftDist, (jim_uint_fast32_t) absA<<shiftDist )
                 : 0;
         return u.f;
     } else {
         shiftDist += 7;
         sig =
             (shiftDist < 0)
-                ? softfloat_shortShiftRightJam64( absA, -shiftDist )
-                : (uint_fast32_t) absA<<shiftDist;
-        return softfloat_roundPackToF32( sign, 0x9C - shiftDist, sig );
+                ? jim_softfloat_shortShiftRightJam64( absA, -shiftDist )
+                : (jim_uint_fast32_t) absA<<shiftDist;
+        return jim_softfloat_roundPackToF32( sign, 0x9C - shiftDist, sig );
     }
 
 }
