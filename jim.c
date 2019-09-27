@@ -66,9 +66,11 @@
 #define jim_isnan isnan
 #define jim_isinf isinf
 #define jim_lt(a,b) (a < b)
+#define jim_le(a,b) (a <= b)
 #define jim_gt(a,b) (a > b)
 #define jim_ge(a,b) (a >= b)
 #define jim_eq(a,b) (a == b)
+#define jim_neq(a,b) (a != b)
 #define jim_add(a,b) (a+b)
 #define jim_sub(a,b) (a-b)
 #define jim_mul(a,b) (a*b)
@@ -84,9 +86,11 @@
 #define jim_isnan(a) 0
 #define jim_isinf(a) 0
 #define jim_lt(a,b) jim_f64_lt(a, b)
+#define jim_le(a,b) jim_f64_le(a, b)
 #define jim_gt(a,b) jim_f64_lt(b, a)
 #define jim_ge(a,b) jim_f64_le(b, a)
 #define jim_eq(a,b) jim_f64_eq(a, b)
+#define jim_neq(a,b) !jim_f64_eq(a, b)
 #define jim_add(a,b) (jim_f64_add((a),(b)))
 #define jim_sub(a,b) (jim_f64_sub((a),(b)))
 #define jim_mul(a,b) (jim_f64_mul((a),(b)))
@@ -8213,22 +8217,22 @@ static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
                 }
                 goto doubleresult;
             case JIM_EXPROP_LT:
-                wC = dA < dB;
+                wC = jim_lt(dA, dB);
                 goto intresult;
             case JIM_EXPROP_GT:
-                wC = dA > dB;
+                wC = jim_gt(dA, dB);
                 goto intresult;
             case JIM_EXPROP_LTE:
-                wC = dA <= dB;
+                wC = jim_le(dA, dB);
                 goto intresult;
             case JIM_EXPROP_GTE:
-                wC = dA >= dB;
+                wC = jim_ge(dA, dB);
                 goto intresult;
             case JIM_EXPROP_NUMEQ:
-                wC = dA == dB;
+                wC = jim_eq(dA, dB);
                 goto intresult;
             case JIM_EXPROP_NUMNE:
-                wC = dA != dB;
+                wC = jim_neq(dA, dB);
                 goto intresult;
         }
     }
@@ -8342,7 +8346,7 @@ static int ExprBool(Jim_Interp *interp, Jim_Obj *obj)
         ret = (l != 0);
     }
     else if (Jim_GetDouble(interp, obj, &d) == JIM_OK) {
-        ret = (d != 0);
+        ret = jim_neq(d, jim_zero);
     }
     else if (Jim_GetBoolean(interp, obj, &b) == JIM_OK) {
         ret = (b != 0);
@@ -9043,7 +9047,7 @@ missingoperand:
                     objPtr = Jim_NewIntObj(interp, jim_strtoull(t->token, &endptr));
                 }
                 else {
-                    objPtr = Jim_NewDoubleObj(interp, strtod(t->token, &endptr));
+                    objPtr = Jim_NewDoubleObj(interp, jim_strtod(t->token, &endptr));
                 }
                 if (endptr != t->token + t->len) {
                     /* Conversion failed, so just store it as a string */
@@ -9886,7 +9890,7 @@ static int ScanOneEntry(Jim_Interp *interp, const char *str, int pos, int strLen
             case 'f':
             case 'g':{
                     char *endp;
-                    jim_double value = strtod(tok, &endp);
+                    jim_double value = jim_strtod(tok, &endp);
 
                     if (endp != tok) {
                         /* There was some number sucessfully scanned! */
@@ -11408,7 +11412,7 @@ static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
     Jim_SetResultInt(interp, res);
     return JIM_OK;
   trydouble:
-    doubleRes = (double)res;
+    doubleRes = jim_wide_to_double(res);
     for (; i < argc; i++) {
         if (Jim_GetDouble(interp, argv[i], &doubleValue) != JIM_OK)
             return JIM_ERR;
