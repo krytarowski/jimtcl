@@ -407,7 +407,7 @@ jim_double jim_strtof( const char *nptr, char **endptr )
     return strtof(nptr, endptr);
 }
 
-int jim_stof( jim_double f, char *str, unsigned int len )
+int jim_stof( jim_double f, const char *format, char *str, unsigned int len )
 {
     return snprintf(str, len, "%g", f);
 }

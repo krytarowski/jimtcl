@@ -138,7 +138,7 @@ jim_float jim_float_hypot( jim_float );
 jim_float jim_float_fmod( jim_float );
 
 jim_float jim_strtof( const char *, char ** );
-int jim_stof( jim_float, char *, unsigned int );
+int jim_stof( jim_float, const char *, char *, unsigned int );
 
 /*----------------------------------------------------------------------------
 | 64-bit (double-precision) floating-point operations.
@@ -184,7 +184,7 @@ jim_double jim_double_hypot( jim_double );
 jim_double jim_double_fmod( jim_double );
 
 jim_double jim_strtod( const char *, char ** );
-int jim_stof( jim_float, char *, unsigned int );
+int jim_stof( jim_float, const char *, char *, unsigned int );
 
 /*----------------------------------------------------------------------------
 | jimtcl soft float/double commonly used constants
