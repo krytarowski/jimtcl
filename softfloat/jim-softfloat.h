@@ -202,5 +202,3 @@ int jim_stof( jim_float, char *, unsigned int );
 #endif
 
 #endif
-
-#endif
