@@ -65,6 +65,22 @@ JIM_CTASSERT(sizeof(jim_int32_t) == 4);
 JIM_CTASSERT(sizeof(jim_int64_t) == 8);
 
 /*----------------------------------------------------------------------------
+| Compat types
+*----------------------------------------------------------------------------*/
+
+typedef unsigned char jim_uint_fast8_t;
+typedef unsigned short jim_uint_fast16_t;
+typedef unsigned int jim_uint_fast32_t;
+typedef unsigned long long jim_uint_fast64_t;
+
+typedef signed char jim_int_fast8_t;
+typedef signed short jim_int_fast16_t;
+typedef signed int jim_int_fast32_t;
+typedef signed long long jim_int_fast64_t;
+
+typedef int jim_bool;
+
+/*----------------------------------------------------------------------------
 | Software floating-point underflow tininess-detection mode.
 *----------------------------------------------------------------------------*/
 extern jim_uint8_t jim_softfloat_detectTininess;
