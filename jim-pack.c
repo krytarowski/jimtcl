@@ -1,6 +1,12 @@
 #include <string.h>
 #include <jim.h>
 
+#ifndef HAVE_SOFTFLOAT
+#define jim_float_to_double(a) ((double)(a))
+#else
+#define jim_float_to_double(a) (jim_f32_to_f64(a))
+#endif
+
 /* Provides the [pack] and [unpack] commands to pack and unpack
  * a binary string to/from arbitrary width integers and strings.
  *
@@ -198,7 +204,7 @@ static void JimSetBitsIntLittleEndian(unsigned char *bitvec, jim_wide value, int
  *
  * Should work for both little- and big-endian platforms.
  */
-static float JimIntToFloat(jim_wide value)
+static jim_float JimIntToFloat(jim_wide value)
 {
     int offs;
     float val;
@@ -215,15 +221,15 @@ static float JimIntToFloat(jim_wide value)
  *
  * Double precision version of JimIntToFloat
  */
-static double JimIntToDouble(jim_wide value)
+static jim_double JimIntToDouble(jim_wide value)
 {
     int offs;
-    double val;
+    jim_double val;
 
     /* Skip offs to get to least significant bytes */
-    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(double)) : 0;
+    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(jim_double)) : 0;
 
-    memcpy(&val, (unsigned char *) &value + offs, sizeof(double));
+    memcpy(&val, (unsigned char *) &value + offs, sizeof(jim_double));
     return val;
 }
 
@@ -235,7 +241,7 @@ static double JimIntToDouble(jim_wide value)
  *
  * Should work for both little- and big-endian platforms.
  */
-static jim_wide JimFloatToInt(float value)
+static jim_wide JimFloatToInt(jim_float value)
 {
     int offs;
     jim_wide val = 0;
@@ -252,15 +258,15 @@ static jim_wide JimFloatToInt(float value)
  *
  * Double precision version of JimFloatToInt
  */
-static jim_wide JimDoubleToInt(double value)
+static jim_wide JimDoubleToInt(jim_double value)
 {
     int offs;
     jim_wide val = 0;
 
     /* Skip offs to get to least significant bytes */
-    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(double)) : 0;
+    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(jim_double)) : 0;
 
-    memcpy((unsigned char *) &val + offs, &value, sizeof(double));
+    memcpy((unsigned char *) &val + offs, &value, sizeof(jim_double));
     return val;
 }
 
@@ -341,9 +347,9 @@ static int Jim_UnpackCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         }
 
         if (option == OPT_FLOATBE || option == OPT_FLOATLE) {
-            double fresult;
+            jim_double fresult;
             if (width == 32) {
-                fresult = (double) JimIntToFloat(result);
+                fresult = jim_float_to_double(JimIntToFloat(result));
             } else if (width == 64) {
                 fresult = JimIntToDouble(result);
             } else {
