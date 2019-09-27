@@ -50,18 +50,22 @@ extern "C" {
 *----------------------------------------------------------------------------*/
 
 typedef unsigned char jim_uint8_t;
+typedef unsigned short jim_uint16_t;
 typedef unsigned int jim_uint32_t;
 typedef unsigned long long jim_uint64_t;
 
 typedef signed char jim_int8_t;
+typedef signed short jim_int16_t;
 typedef signed int jim_int32_t;
 typedef signed long long jim_int64_t;
 
 JIM_CTASSERT(sizeof(jim_uint8_t) == 1);
+JIM_CTASSERT(sizeof(jim_uint16_t) == 2);
 JIM_CTASSERT(sizeof(jim_uint32_t) == 4);
 JIM_CTASSERT(sizeof(jim_uint64_t) == 8);
 
 JIM_CTASSERT(sizeof(jim_int8_t) == 1);
+JIM_CTASSERT(sizeof(jim_int16_t) == 2);
 JIM_CTASSERT(sizeof(jim_int32_t) == 4);
 JIM_CTASSERT(sizeof(jim_int64_t) == 8);
 

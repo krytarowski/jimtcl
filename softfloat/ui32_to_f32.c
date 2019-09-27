@@ -47,9 +47,9 @@ jim_float jim_ui32_to_f32( jim_uint32_t a )
         return uZ.f;
     }
     if ( a & 0x80000000 ) {
-        return softfloat_roundPackToF32( 0, 0x9D, a>>1 | (a & 1) );
+        return jim_softfloat_roundPackToF32( 0, 0x9D, a>>1 | (a & 1) );
     } else {
-        return softfloat_normRoundPackToF32( 0, 0x9C, a );
+        return jim_softfloat_normRoundPackToF32( 0, 0x9C, a );
     }
 
 }

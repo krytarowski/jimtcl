@@ -37,19 +37,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef JIM_SOFTFLOAT_INTERNALS_H
 #define JIM_SOFTFLOAT_INTERNALS_H
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "primitives.h"
-#include "softfloat_types.h"
+#include "jim.h"
+#include "jim-softfloat-primitives.h"
 
-union ui16_f16 { uint16_t ui; float16_t f; };
-union ui32_f32 { uint32_t ui; float32_t f; };
-union ui64_f64 { uint64_t ui; float64_t f; };
-
-#ifdef SOFTFLOAT_FAST_INT64
-union extF80M_extF80 { struct extFloat80M fM; extFloat80_t f; };
-union ui128_f128 { struct uint128 ui; float128_t f; };
-#endif
+union jim_ui32_f32 { jim_uint32_t ui; jim_float f; };
+union jim_ui64_f64 { jim_uint64_t ui; jim_double f; };
 
 enum {
     softfloat_mulAdd_subC    = 1,
@@ -111,8 +103,8 @@ float16_t
 struct exp16_sig32 { int_fast16_t exp; uint_fast32_t sig; };
 struct exp16_sig32 softfloat_normSubnormalF32Sig( uint_fast32_t );
 
-float32_t softfloat_roundPackToF32( bool, int_fast16_t, uint_fast32_t );
-float32_t softfloat_normRoundPackToF32( bool, int_fast16_t, uint_fast32_t );
+jim_float jim_softfloat_roundPackToF32( int, jim_int16_t, jim_uint32_t );
+jim_float jim_softfloat_normRoundPackToF32( int, jim_int16_t, jim_uint32_t );
 
 float32_t softfloat_addMagsF32( uint_fast32_t, uint_fast32_t );
 float32_t softfloat_subMagsF32( uint_fast32_t, uint_fast32_t );
