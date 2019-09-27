@@ -51,10 +51,6 @@ static inline jim_float jim_float_div( jim_float f1, jim_float f2 )
 {
     return f1 / f2;
 }
-static inline jim_float jim_float_rem( jim_float f1, jim_float f2 )
-{
-    return f1 % f2;
-}
 
 static inline int jim_float_eq( jim_float f1, jim_float f2 )
 {
@@ -134,10 +130,6 @@ static inline jim_double jim_double_mul( jim_double f1, jim_double f2 )
 static inline jim_double jim_double_div( jim_double f1, jim_double f2 )
 {
     return f1 / f2;
-}
-static inline jim_double jim_double_rem( jim_double f1, jim_double f2 )
-{
-    return f1 % f2;
 }
 
 static inline int jim_double_eq( jim_double f1, jim_double f2 )

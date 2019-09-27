@@ -105,7 +105,6 @@ jim_float jim_float_add( jim_float, jim_float );
 jim_float jim_float_sub( jim_float, jim_float );
 jim_float jim_float_mul( jim_float, jim_float );
 jim_float jim_float_div( jim_float, jim_float );
-jim_float jim_float_rem( jim_float, jim_float );
 
 int jim_float_eq( jim_float, jim_float );
 int jim_float_le( jim_float, jim_float );
@@ -151,7 +150,6 @@ jim_double jim_double_add( jim_double, jim_double );
 jim_double jim_double_sub( jim_double, jim_double );
 jim_double jim_double_mul( jim_double, jim_double );
 jim_double jim_double_div( jim_double, jim_double );
-jim_double jim_double_rem( jim_double, jim_double );
 
 int jim_double_eq( jim_double, jim_double );
 int jim_double_le( jim_double, jim_double );
