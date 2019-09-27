@@ -357,7 +357,7 @@ Jim_Obj *Jim_FormatString(Jim_Interp *interp, Jim_Obj *fmtObjPtr, int objc, Jim_
         case 'x':
         case 'X': {
             jim_wide w;
-            double d;
+            jim_double d;
             int length;
 
             /* Fill in the width and precision */

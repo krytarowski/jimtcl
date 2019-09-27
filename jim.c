@@ -564,7 +564,7 @@ int Jim_StringToWide(const char *str, jim_wide * widePtr, int base)
     return JimCheckConversion(str, endptr);
 }
 
-int Jim_StringToDouble(const char *str, double *doublePtr)
+int Jim_StringToDouble(const char *str, jim_double *doublePtr)
 {
     char *endptr;
 
@@ -2996,7 +2996,7 @@ static int JimStringIs(Jim_Interp *interp, Jim_Obj *strObjPtr, Jim_Obj *strClass
 
         case STR_IS_DOUBLE:
             {
-                double d;
+                jim_double d;
                 Jim_SetResultBool(interp, Jim_GetDouble(interp, strObjPtr, &d) == JIM_OK && errno != ERANGE);
                 return JIM_OK;
             }
@@ -6024,7 +6024,7 @@ static const Jim_ObjType doubleObjType = {
 
 static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
 {
-    double value = objPtr->internalRep.doubleValue;
+    jim_double value = objPtr->internalRep.doubleValue;
 
     if (isnan(value)) {
         JimSetStringBytes(objPtr, "NaN");
@@ -6072,7 +6072,7 @@ static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
 
 static int SetDoubleFromAny(Jim_Interp *interp, Jim_Obj *objPtr)
 {
-    double doubleValue;
+    jim_double doubleValue;
     jim_wide wideValue;
     const char *str;
 
@@ -6116,7 +6116,7 @@ static int SetDoubleFromAny(Jim_Interp *interp, Jim_Obj *objPtr)
     return JIM_OK;
 }
 
-int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr, double *doublePtr)
+int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr, jim_double *doublePtr)
 {
     if (objPtr->typePtr == &coercedDoubleObjType) {
         *doublePtr = JimWideValue(objPtr);
@@ -6134,7 +6134,7 @@ int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr, double *doublePtr)
     return JIM_OK;
 }
 
-Jim_Obj *Jim_NewDoubleObj(Jim_Interp *interp, double doubleValue)
+Jim_Obj *Jim_NewDoubleObj(Jim_Interp *interp, jim_double doubleValue)
 {
     Jim_Obj *objPtr;
 
@@ -6663,7 +6663,7 @@ static int ListSortInteger(Jim_Obj **lhsObj, Jim_Obj **rhsObj)
 
 static int ListSortReal(Jim_Obj **lhsObj, Jim_Obj **rhsObj)
 {
-    double lhs = 0, rhs = 0;
+    jim_double lhs = 0, rhs = 0;
 
     if (Jim_GetDouble(sort_info->interp, *lhsObj, &lhs) != JIM_OK ||
         Jim_GetDouble(sort_info->interp, *rhsObj, &rhs) != JIM_OK) {
@@ -7741,7 +7741,7 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
 {
     int intresult = 1;
     int rc;
-    double dA, dC = 0;
+    jim_double dA, dC = 0;
     jim_wide wA, wC = 0;
     Jim_Obj *A;
 
@@ -7822,7 +7822,7 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
     return rc;
 }
 
-static double JimRandDouble(Jim_Interp *interp)
+static jim_double JimRandDouble(Jim_Interp *interp)
 {
     unsigned long x;
     JimRandomBytes(interp, &x, sizeof(x));
@@ -7873,7 +7873,7 @@ static int JimExprOpNone(Jim_Interp *interp, struct JimExprNode *node)
 static int JimExprOpDoubleUnary(Jim_Interp *interp, struct JimExprNode *node)
 {
     int rc;
-    double dA, dC;
+    jim_double dA, dC;
     Jim_Obj *A;
 
     if ((rc = JimExprGetTerm(interp, node->left, &A)) != JIM_OK) {
@@ -8042,7 +8042,7 @@ static int JimExprOpIntBin(Jim_Interp *interp, struct JimExprNode *node)
 static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
 {
     int rc = JIM_OK;
-    double dA, dB, dC = 0;
+    jim_double dA, dB, dC = 0;
     jim_wide wA, wB, wC = 0;
     Jim_Obj *A, *B;
 
@@ -8290,7 +8290,7 @@ static int JimExprOpStrBin(Jim_Interp *interp, struct JimExprNode *node)
 static int ExprBool(Jim_Interp *interp, Jim_Obj *obj)
 {
     long l;
-    double d;
+    jim_double d;
     int b;
     int ret = -1;
 
@@ -9845,7 +9845,7 @@ static int ScanOneEntry(Jim_Interp *interp, const char *str, int pos, int strLen
             case 'f':
             case 'g':{
                     char *endp;
-                    double value = strtod(tok, &endp);
+                    jim_double value = strtod(tok, &endp);
 
                     if (endp != tok) {
                         /* There was some number sucessfully scanned! */
@@ -11351,7 +11351,7 @@ static int Jim_PutsCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *arg
 static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, int op)
 {
     jim_wide wideValue, res;
-    double doubleValue, doubleRes;
+    jim_double doubleValue, doubleRes;
     int i;
 
     res = (op == JIM_EXPROP_ADD) ? 0 : 1;
@@ -11384,7 +11384,7 @@ static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
 static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, int op)
 {
     jim_wide wideValue, res = 0;
-    double doubleValue, doubleRes = 0;
+    jim_double doubleValue, doubleRes = 0;
     int i = 2;
 
     if (argc < 2) {
