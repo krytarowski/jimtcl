@@ -102,15 +102,10 @@ extern "C" {
     } y ## z ## _jimstruct
 
 /* -----------------------------------------------------------------------------
- * SoftFloat IEEE emulation.
+ * Native Floats / SoftFloat IEEE emulation.
  * ---------------------------------------------------------------------------*/
 
-#ifndef HAVE_SOFTFLOAT
-typedef float jim_float;
-typedef double jim_double;
-#else
 #include <jim-softfloat.h>
-#endif
 
 /* -----------------------------------------------------------------------------
  * Compiler specific fixes.

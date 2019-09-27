@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#ifndef JIM_SOFTFLOAT_H
-#define JIM_SOFTFLOAT_H
+#ifndef JIM_SOFTFLOATS_H
+#define JIM_SOFTFLOATS_H
 
 #include <jim.h>
 
