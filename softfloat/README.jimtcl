@@ -11,4 +11,4 @@ Date: Thu, 26 Jul 2018 13:52:23 -0700
 Subject: [PATCH] Fix typo in function 'softfloat_propagateNaNF128M' for
  RISC-V.
 
-This version has been heavily modified to support its use with jimtcl.
+This version has been heavily reduced and modified to support jimtcl.
