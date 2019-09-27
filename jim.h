@@ -89,7 +89,7 @@ extern "C" {
  * SoftFloat IEEE emulation.
  * ---------------------------------------------------------------------------*/
 
-#ifdef HAVE_SOFTFLOAT
+#ifndef HAVE_SOFTFLOAT
 typedef float jim_float;
 typedef double jim_double;
 #else
