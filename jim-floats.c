@@ -11,8 +11,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define MAXLEN_CHARS_IN_FLOAT 16
-#define MAXLEN_CHARS_IN_DOUBLE 24
 
 int jim_float_isnan( jim_float f )
 {
