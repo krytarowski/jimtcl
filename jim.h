@@ -105,7 +105,7 @@ extern "C" {
  * Native Floats / SoftFloat IEEE emulation.
  * ---------------------------------------------------------------------------*/
 
-#include <jim-softfloat.h>
+#include <jim-floats.h>
 
 /* -----------------------------------------------------------------------------
  * Compiler specific fixes.
