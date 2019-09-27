@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "jim.h"
 #include "jim-softfloat-internals.h"
+#include "jim-softfloat-types.h"
 
 #if 0
 
