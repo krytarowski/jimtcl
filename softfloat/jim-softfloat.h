@@ -80,112 +80,94 @@ JIM_CTASSERT(sizeof(jim_uint32_t) == sizeof(jim_float));
 JIM_CTASSERT(sizeof(jim_uint64_t) == sizeof(jim_double));
 
 /*----------------------------------------------------------------------------
-| Software floating-point underflow tininess-detection mode.
-*----------------------------------------------------------------------------*/
-extern jim_uint8_t jim_softfloat_detectTininess;
-enum {
-    jim_softfloat_tininess_beforeRounding = 0,
-    jim_softfloat_tininess_afterRounding  = 1
-};
-
-/*----------------------------------------------------------------------------
-| Software floating-point rounding mode.  (Mode "odd" is supported only if
-| SoftFloat is compiled with macro 'SOFTFLOAT_ROUND_ODD' defined.)
-*----------------------------------------------------------------------------*/
-extern jim_uint8_t softfloat_roundingMode;
-enum {
-    jim_softfloat_round_near_even   = 0,
-    jim_softfloat_round_minMag      = 1,
-    jim_softfloat_round_min         = 2,
-    jim_softfloat_round_max         = 3,
-    jim_softfloat_round_near_maxMag = 4,
-    jim_softfloat_round_odd         = 6
-};
-
-/*----------------------------------------------------------------------------
-| Software floating-point exception flags.
-*----------------------------------------------------------------------------*/
-extern jim_uint8_t softfloat_exceptionFlags;
-enum {
-    jim_softfloat_flag_inexact   =  1,
-    jim_softfloat_flag_underflow =  2,
-    jim_softfloat_flag_overflow  =  4,
-    jim_softfloat_flag_infinite  =  8,
-    jim_softfloat_flag_invalid   = 16
-};
-
-/*----------------------------------------------------------------------------
-| Routine to raise any or all of the software floating-point exception flags.
-*----------------------------------------------------------------------------*/
-void jim_softfloat_raiseFlags( jim_uint8_t );
-
-/*----------------------------------------------------------------------------
 | Integer-to-floating-point conversion routines.
 *----------------------------------------------------------------------------*/
-jim_float jim_ui32_to_f32( jim_uint32_t );
-jim_double jim_ui32_to_f64( jim_uint32_t );
-jim_float jim_ui64_to_f32( jim_uint64_t );
-jim_double jim_ui64_to_f64( jim_uint64_t );
-jim_float jim_i32_to_f32( jim_int32_t );
-jim_double jim_i32_to_f64( jim_int32_t );
-jim_float jim_i64_to_f32( jim_int64_t );
-jim_double jim_i64_to_f64( jim_int64_t );
+jim_float jim_wide_to_float( jim_wide );
+jim_double jim_wide_to_double( jim_wide );
 
 /*----------------------------------------------------------------------------
 | 32-bit (single-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-jim_uint32_t jim_f32_to_ui32( jim_float, jim_uint8_t, int );
-jim_uint64_t jim_f32_to_ui64( jim_float, jim_uint8_t, int );
-jim_int32_t jim_f32_to_i32( jim_float, jim_uint8_t, int );
-jim_int64_t jim_f32_to_i64( jim_float, jim_uint8_t, int );
-jim_uint32_t jim_f32_to_ui32_r_minMag( jim_float, int );
-jim_uint64_t jim_f32_to_ui64_r_minMag( jim_float, int );
-jim_int32_t jim_f32_to_i32_r_minMag( jim_float, int );
-jim_int64_t jim_f32_to_i64_r_minMag( jim_float, int );
-jim_double jim_f32_to_f64( jim_float );
-jim_float jim_f32_roundToInt( jim_float, jim_uint8_t, int );
-jim_float jim_f32_add( jim_float, jim_float );
-jim_float jim_f32_sub( jim_float, jim_float );
-jim_float jim_f32_mul( jim_float, jim_float );
-jim_float jim_f32_mulAdd( jim_float, jim_float, jim_float );
-jim_float jim_f32_div( jim_float, jim_float );
-jim_float jim_f32_rem( jim_float, jim_float );
-jim_float jim_f32_sqrt( jim_float );
-int jim_f32_eq( jim_float, jim_float );
-int jim_f32_le( jim_float, jim_float );
-int jim_f32_lt( jim_float, jim_float );
-int jim_f32_eq_signaling( jim_float, jim_float );
-int jim_f32_le_quiet( jim_float, jim_float );
-int jim_f32_lt_quiet( jim_float, jim_float );
-int jim_f32_isSignalingNaN( jim_float );
+jim_wide jim_float_to_wide( jim_float );
+jim_double jim_float_to_double( jim_float );
+
+jim_float jim_float_add( jim_float, jim_float );
+jim_float jim_float_sub( jim_float, jim_float );
+jim_float jim_float_mul( jim_float, jim_float );
+jim_float jim_float_div( jim_float, jim_float );
+jim_float jim_float_rem( jim_float, jim_float );
+
+int jim_float_eq( jim_float, jim_float );
+int jim_float_le( jim_float, jim_float );
+int jim_float_lt( jim_float, jim_float );
+int jim_float_neq( jim_float, jim_float );
+int jim_float_ge( jim_float, jim_float );
+int jim_float_gt( jim_float, jim_float );
+
+int jim_float_isnan( jim_float );
+int jim_float_isinf( jim_float );
+
+jim_float jim_float_sin( jim_float );
+jim_float jim_float_cos( jim_float );
+jim_float jim_float_tan( jim_float );
+jim_float jim_float_asin( jim_float );
+jim_float jim_float_acos( jim_float );
+jim_float jim_float_atan( jim_float );
+jim_float jim_float_atan2( jim_float );
+jim_float jim_float_sinh( jim_float );
+jim_float jim_float_cosh( jim_float );
+jim_float jim_float_tanh( jim_float );
+jim_float jim_float_ceil( jim_float );
+jim_float jim_float_floor( jim_float );
+jim_float jim_float_exp( jim_float );
+jim_float jim_float_log( jim_float );
+jim_float jim_float_log10( jim_float );
+jim_float jim_float_sqrt( jim_float );
+jim_float jim_float_pow( jim_float );
+jim_float jim_float_hypot( jim_float );
+jim_float jim_float_fmod( jim_float );
 
 /*----------------------------------------------------------------------------
 | 64-bit (double-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-jim_uint32_t jim_f64_to_ui32( jim_double, jim_uint8_t, int );
-jim_uint64_t jim_f64_to_ui64( jim_double, jim_uint8_t, int );
-jim_int32_t jim_f64_to_i32( jim_double, jim_uint8_t, int );
-jim_int64_t jim_f64_to_i64( jim_double, jim_uint8_t, int );
-jim_uint32_t jim_f64_to_ui32_r_minMag( jim_double, int );
-jim_uint64_t jim_f64_to_ui64_r_minMag( jim_double, int );
-jim_int32_t jim_f64_to_i32_r_minMag( jim_double, int );
-jim_int64_t jim_f64_to_i64_r_minMag( jim_double, int );
-jim_float jim_f64_to_f32( jim_double );
-jim_double jim_f64_roundToInt( jim_double, jim_uint8_t, int );
-jim_double jim_f64_add( jim_double, jim_double );
-jim_double jim_f64_sub( jim_double, jim_double );
-jim_double jim_f64_mul( jim_double, jim_double );
-jim_double jim_f64_mulAdd( jim_double, jim_double, jim_double );
-jim_double jim_f64_div( jim_double, jim_double );
-jim_double jim_f64_rem( jim_double, jim_double );
-jim_double jim_f64_sqrt( jim_double );
-int jim_f64_eq( jim_double, jim_double );
-int jim_f64_le( jim_double, jim_double );
-int jim_f64_lt( jim_double, jim_double );
-int jim_f64_eq_signaling( jim_double, jim_double );
-int jim_f64_le_quiet( jim_double, jim_double );
-int jim_f64_lt_quiet( jim_double, jim_double );
-int jim_f64_isSignalingNaN( jim_double );
+jim_wide jim_double_to_wide( jim_double, jim_uint8_t, int );
+jim_float jim_double_to_float( jim_double );
+
+jim_double jim_double_add( jim_double, jim_double );
+jim_double jim_double_sub( jim_double, jim_double );
+jim_double jim_double_mul( jim_double, jim_double );
+jim_double jim_double_div( jim_double, jim_double );
+jim_double jim_double_rem( jim_double, jim_double );
+
+int jim_double_eq( jim_double, jim_double );
+int jim_double_le( jim_double, jim_double );
+int jim_double_lt( jim_double, jim_double );
+int jim_double_neq( jim_double, jim_double );
+int jim_double_ge( jim_double, jim_double );
+int jim_double_gt( jim_double, jim_double );
+
+int jim_double_isnan( jim_double );
+int jim_double_isinf( jim_double );
+
+jim_double jim_double_sin( jim_double );
+jim_double jim_double_cos( jim_double );
+jim_double jim_double_tan( jim_double );
+jim_double jim_double_asin( jim_double );
+jim_double jim_double_acos( jim_double );
+jim_double jim_double_atan( jim_double );
+jim_double jim_double_atan2( jim_double );
+jim_double jim_double_sinh( jim_double );
+jim_double jim_double_cosh( jim_double );
+jim_double jim_double_tanh( jim_double );
+jim_double jim_double_ceil( jim_double );
+jim_double jim_double_floor( jim_double );
+jim_double jim_double_exp( jim_double );
+jim_double jim_double_log( jim_double );
+jim_double jim_double_log10( jim_double );
+jim_double jim_double_sqrt( jim_double );
+jim_double jim_double_pow( jim_double );
+jim_double jim_double_hypot( jim_double );
+jim_double jim_double_fmod( jim_double );
 
 #ifdef __cplusplus
 }
