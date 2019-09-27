@@ -39,24 +39,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <jim.h>
 
+#ifdef HAVE_SOFTFLOAT
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*----------------------------------------------------------------------------
-| Software floating-point underflow tininess-detection mode.
+| Auxiliary types.
 *----------------------------------------------------------------------------*/
 
 typedef unsigned char jim_uint8_t;
 typedef unsigned int jim_uint32_t;
 typedef unsigned long long jim_uint64_t;
 
-typedef struct { jim_uint32_t v; } jim_float;
-typedef struct { jim_uint64_t v; } jim_double;
+typedef signed char jim_int8_t;
+typedef signed int jim_int32_t;
+typedef signed long long jim_int64_t;
 
 JIM_CTASSERT(sizeof(jim_uint8_t) == 1);
 JIM_CTASSERT(sizeof(jim_uint32_t) == 4);
 JIM_CTASSERT(sizeof(jim_uint64_t) == 8);
+
+JIM_CTASSERT(sizeof(jim_int8_t) == 1);
+JIM_CTASSERT(sizeof(jim_int32_t) == 4);
+JIM_CTASSERT(sizeof(jim_int64_t) == 8);
+
+/*----------------------------------------------------------------------------
+| jimtcl soft float/double
+*----------------------------------------------------------------------------*/
+
+typedef struct { jim_uint32_t v; } jim_float;
+typedef struct { jim_uint64_t v; } jim_double;
 
 JIM_CTASSERT(sizeof(jim_uint32_t) == sizeof(jim_float));
 JIM_CTASSERT(sizeof(jim_uint64_t) == sizeof(jim_double));
@@ -64,10 +78,10 @@ JIM_CTASSERT(sizeof(jim_uint64_t) == sizeof(jim_double));
 /*----------------------------------------------------------------------------
 | Software floating-point underflow tininess-detection mode.
 *----------------------------------------------------------------------------*/
-extern jim_uint8_t softfloat_detectTininess;
+extern jim_uint8_t jim_softfloat_detectTininess;
 enum {
-    softfloat_tininess_beforeRounding = 0,
-    softfloat_tininess_afterRounding  = 1
+    jim_softfloat_tininess_beforeRounding = 0,
+    jim_softfloat_tininess_afterRounding  = 1
 };
 
 /*----------------------------------------------------------------------------
@@ -76,56 +90,56 @@ enum {
 *----------------------------------------------------------------------------*/
 extern jim_uint8_t softfloat_roundingMode;
 enum {
-    softfloat_round_near_even   = 0,
-    softfloat_round_minMag      = 1,
-    softfloat_round_min         = 2,
-    softfloat_round_max         = 3,
-    softfloat_round_near_maxMag = 4,
-    softfloat_round_odd         = 6
+    jim_softfloat_round_near_even   = 0,
+    jim_softfloat_round_minMag      = 1,
+    jim_softfloat_round_min         = 2,
+    jim_softfloat_round_max         = 3,
+    jim_softfloat_round_near_maxMag = 4,
+    jim_softfloat_round_odd         = 6
 };
 
 /*----------------------------------------------------------------------------
 | Software floating-point exception flags.
 *----------------------------------------------------------------------------*/
-extern  uint_fast8_t softfloat_exceptionFlags;
+extern jim_uint8_t softfloat_exceptionFlags;
 enum {
-    softfloat_flag_inexact   =  1,
-    softfloat_flag_underflow =  2,
-    softfloat_flag_overflow  =  4,
-    softfloat_flag_infinite  =  8,
-    softfloat_flag_invalid   = 16
+    jim_softfloat_flag_inexact   =  1,
+    jim_softfloat_flag_underflow =  2,
+    jim_softfloat_flag_overflow  =  4,
+    jim_softfloat_flag_infinite  =  8,
+    jim_softfloat_flag_invalid   = 16
 };
 
 /*----------------------------------------------------------------------------
 | Routine to raise any or all of the software floating-point exception flags.
 *----------------------------------------------------------------------------*/
-void softfloat_raiseFlags( uint_fast8_t );
+void jim_softfloat_raiseFlags( jim_uint8_t );
 
 /*----------------------------------------------------------------------------
 | Integer-to-floating-point conversion routines.
 *----------------------------------------------------------------------------*/
-jim_float jim_ui32_to_f32( uint32_t );
-jim_double jim_ui32_to_f64( uint32_t );
-jim_float jim_ui64_to_f32( uint64_t );
-jim_double jim_ui64_to_f64( uint64_t );
-jim_float jim_i32_to_f32( int32_t );
-jim_double jim_i32_to_f64( int32_t );
-jim_float jim_i64_to_f32( int64_t );
-jim_double jim_i64_to_f64( int64_t );
+jim_float jim_ui32_to_f32( jim_uint32_t );
+jim_double jim_ui32_to_f64( jim_uint32_t );
+jim_float jim_ui64_to_f32( jim_uint64_t );
+jim_double jim_ui64_to_f64( jim_uint64_t );
+jim_float jim_i32_to_f32( jim_int32_t );
+jim_double jim_i32_to_f64( jim_int32_t );
+jim_float jim_i64_to_f32( jim_int64_t );
+jim_double jim_i64_to_f64( jim_int64_t );
 
 /*----------------------------------------------------------------------------
 | 32-bit (single-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-uint_fast32_t jim_f32_to_ui32( jim_float, uint_fast8_t, int );
-uint_fast64_t jim_f32_to_ui64( jim_float, uint_fast8_t, int );
-int_fast32_t jim_f32_to_i32( jim_float, uint_fast8_t, int );
-int_fast64_t jim_f32_to_i64( jim_float, uint_fast8_t, int );
-uint_fast32_t jim_f32_to_ui32_r_minMag( jim_float, int );
-uint_fast64_t jim_f32_to_ui64_r_minMag( jim_float, int );
-int_fast32_t jim_f32_to_i32_r_minMag( jim_float, int );
-int_fast64_t jim_f32_to_i64_r_minMag( jim_float, int );
+jim_uint32_t jim_f32_to_ui32( jim_float, jim_uint8_t, int );
+jim_uint64_t jim_f32_to_ui64( jim_float, jim_uint8_t, int );
+jim_int32_t jim_f32_to_i32( jim_float, jim_uint8_t, int );
+jim_int64_t jim_f32_to_i64( jim_float, jim_uint8_t, int );
+jim_uint32_t jim_f32_to_ui32_r_minMag( jim_float, int );
+jim_uint64_t jim_f32_to_ui64_r_minMag( jim_float, int );
+jim_int32_t jim_f32_to_i32_r_minMag( jim_float, int );
+jim_int64_t jim_f32_to_i64_r_minMag( jim_float, int );
 jim_double jim_f32_to_f64( jim_float );
-jim_float jim_f32_roundToInt( jim_float, uint_fast8_t, int );
+jim_float jim_f32_roundToInt( jim_float, jim_uint8_t, int );
 jim_float jim_f32_add( jim_float, jim_float );
 jim_float jim_f32_sub( jim_float, jim_float );
 jim_float jim_f32_mul( jim_float, jim_float );
@@ -144,16 +158,16 @@ int jim_f32_isSignalingNaN( jim_float );
 /*----------------------------------------------------------------------------
 | 64-bit (double-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-uint_fast32_t jim_f64_to_ui32( jim_double, uint_fast8_t, int );
-uint_fast64_t jim_f64_to_ui64( jim_double, uint_fast8_t, int );
-int_fast32_t jim_f64_to_i32( jim_double, uint_fast8_t, int );
-int_fast64_t jim_f64_to_i64( jim_double, uint_fast8_t, int );
-uint_fast32_t jim_f64_to_ui32_r_minMag( jim_double, int );
-uint_fast64_t jim_f64_to_ui64_r_minMag( jim_double, int );
-int_fast32_t jim_f64_to_i32_r_minMag( jim_double, int );
-int_fast64_t jim_f64_to_i64_r_minMag( jim_double, int );
+jim_uint32_t jim_f64_to_ui32( jim_double, jim_uint8_t, int );
+jim_uint64_t jim_f64_to_ui64( jim_double, jim_uint8_t, int );
+jim_int32_t jim_f64_to_i32( jim_double, jim_uint8_t, int );
+jim_int64_t jim_f64_to_i64( jim_double, jim_uint8_t, int );
+jim_uint32_t jim_f64_to_ui32_r_minMag( jim_double, int );
+jim_uint64_t jim_f64_to_ui64_r_minMag( jim_double, int );
+jim_int32_t jim_f64_to_i32_r_minMag( jim_double, int );
+jim_int64_t jim_f64_to_i64_r_minMag( jim_double, int );
 jim_float jim_f64_to_f32( jim_double );
-jim_double jim_f64_roundToInt( jim_double, uint_fast8_t, int );
+jim_double jim_f64_roundToInt( jim_double, jim_uint8_t, int );
 jim_double jim_f64_add( jim_double, jim_double );
 jim_double jim_f64_sub( jim_double, jim_double );
 jim_double jim_f64_mul( jim_double, jim_double );
@@ -171,6 +185,8 @@ int jim_f64_isSignalingNaN( jim_double );
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif
