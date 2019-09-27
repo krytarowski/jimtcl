@@ -108,10 +108,8 @@ extern "C" {
 #ifndef HAVE_SOFTFLOAT
 typedef float jim_float;
 typedef double jim_double;
-#define jim_strtod(a,b) strtod(a,b)
 #else
 #include <jim-softfloat.h>
-#define jim_strtod(a,b) strtod(a,b)
 #endif
 
 /* -----------------------------------------------------------------------------
