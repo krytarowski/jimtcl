@@ -92,9 +92,6 @@ cc-check-types "long long"
 define CPPFLAGS ""
 define CCOPTS ""
 define CXXOPTS ""
-if {[opt-bool softfloat]} {
-    define-append CPPFLAGS -Isoftfloat/
-}
 if {[cctest -cflags -fno-unwind-tables]} {
     define-append CCOPTS -fno-unwind-tables
 }
@@ -309,6 +306,8 @@ if {[opt-bool references]} {
 if {[opt-bool softfloat]} {
     msg-result "Enabling SoftFloat IEEE emulation"
     define HAVE_SOFTFLOAT
+    define-append CPPFLAGS -Isoftfloat/
+    lappend extra_objs softfloat/ui32_to_f32.o
 }
 if {[opt-bool shared with-jim-shared]} {
     msg-result "Building shared library"
