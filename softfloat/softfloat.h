@@ -37,9 +37,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef softfloat_h
 #define softfloat_h 1
 
-#include <stdbool.h>
 #include <stdint.h>
-#include "softfloat_types.h"
+
+typedef struct { uint32_t v; } jim_float;
+typedef struct { uint64_t v; } jim_double;
 
 /*----------------------------------------------------------------------------
 | Software floating-point underflow tininess-detection mode.
@@ -96,16 +97,16 @@ jim_double jim_i64_to_f64( int64_t );
 /*----------------------------------------------------------------------------
 | 32-bit (single-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-uint_fast32_t jim_f32_to_ui32( jim_float, uint_fast8_t, bool );
-uint_fast64_t jim_f32_to_ui64( jim_float, uint_fast8_t, bool );
-int_fast32_t jim_f32_to_i32( jim_float, uint_fast8_t, bool );
-int_fast64_t jim_f32_to_i64( jim_float, uint_fast8_t, bool );
-uint_fast32_t jim_f32_to_ui32_r_minMag( jim_float, bool );
-uint_fast64_t jim_f32_to_ui64_r_minMag( jim_float, bool );
-int_fast32_t jim_f32_to_i32_r_minMag( jim_float, bool );
-int_fast64_t jim_f32_to_i64_r_minMag( jim_float, bool );
+uint_fast32_t jim_f32_to_ui32( jim_float, uint_fast8_t, int );
+uint_fast64_t jim_f32_to_ui64( jim_float, uint_fast8_t, int );
+int_fast32_t jim_f32_to_i32( jim_float, uint_fast8_t, int );
+int_fast64_t jim_f32_to_i64( jim_float, uint_fast8_t, int );
+uint_fast32_t jim_f32_to_ui32_r_minMag( jim_float, int );
+uint_fast64_t jim_f32_to_ui64_r_minMag( jim_float, int );
+int_fast32_t jim_f32_to_i32_r_minMag( jim_float, int );
+int_fast64_t jim_f32_to_i64_r_minMag( jim_float, int );
 jim_double jim_f32_to_f64( jim_float );
-jim_float jim_f32_roundToInt( jim_float, uint_fast8_t, bool );
+jim_float jim_f32_roundToInt( jim_float, uint_fast8_t, int );
 jim_float jim_f32_add( jim_float, jim_float );
 jim_float jim_f32_sub( jim_float, jim_float );
 jim_float jim_f32_mul( jim_float, jim_float );
@@ -113,27 +114,27 @@ jim_float jim_f32_mulAdd( jim_float, jim_float, jim_float );
 jim_float jim_f32_div( jim_float, jim_float );
 jim_float jim_f32_rem( jim_float, jim_float );
 jim_float jim_f32_sqrt( jim_float );
-bool jim_f32_eq( jim_float, jim_float );
-bool jim_f32_le( jim_float, jim_float );
-bool jim_f32_lt( jim_float, jim_float );
-bool jim_f32_eq_signaling( jim_float, jim_float );
-bool jim_f32_le_quiet( jim_float, jim_float );
-bool jim_f32_lt_quiet( jim_float, jim_float );
-bool jim_f32_isSignalingNaN( jim_float );
+int jim_f32_eq( jim_float, jim_float );
+int jim_f32_le( jim_float, jim_float );
+int jim_f32_lt( jim_float, jim_float );
+int jim_f32_eq_signaling( jim_float, jim_float );
+int jim_f32_le_quiet( jim_float, jim_float );
+int jim_f32_lt_quiet( jim_float, jim_float );
+int jim_f32_isSignalingNaN( jim_float );
 
 /*----------------------------------------------------------------------------
 | 64-bit (double-precision) floating-point operations.
 *----------------------------------------------------------------------------*/
-uint_fast32_t jim_f64_to_ui32( jim_double, uint_fast8_t, bool );
-uint_fast64_t jim_f64_to_ui64( jim_double, uint_fast8_t, bool );
-int_fast32_t jim_f64_to_i32( jim_double, uint_fast8_t, bool );
-int_fast64_t jim_f64_to_i64( jim_double, uint_fast8_t, bool );
-uint_fast32_t jim_f64_to_ui32_r_minMag( jim_double, bool );
-uint_fast64_t jim_f64_to_ui64_r_minMag( jim_double, bool );
-int_fast32_t jim_f64_to_i32_r_minMag( jim_double, bool );
-int_fast64_t jim_f64_to_i64_r_minMag( jim_double, bool );
+uint_fast32_t jim_f64_to_ui32( jim_double, uint_fast8_t, int );
+uint_fast64_t jim_f64_to_ui64( jim_double, uint_fast8_t, int );
+int_fast32_t jim_f64_to_i32( jim_double, uint_fast8_t, int );
+int_fast64_t jim_f64_to_i64( jim_double, uint_fast8_t, int );
+uint_fast32_t jim_f64_to_ui32_r_minMag( jim_double, int );
+uint_fast64_t jim_f64_to_ui64_r_minMag( jim_double, int );
+int_fast32_t jim_f64_to_i32_r_minMag( jim_double, int );
+int_fast64_t jim_f64_to_i64_r_minMag( jim_double, int );
 jim_float jim_f64_to_f32( jim_double );
-jim_double jim_f64_roundToInt( jim_double, uint_fast8_t, bool );
+jim_double jim_f64_roundToInt( jim_double, uint_fast8_t, int );
 jim_double jim_f64_add( jim_double, jim_double );
 jim_double jim_f64_sub( jim_double, jim_double );
 jim_double jim_f64_mul( jim_double, jim_double );
@@ -141,12 +142,12 @@ jim_double jim_f64_mulAdd( jim_double, jim_double, jim_double );
 jim_double jim_f64_div( jim_double, jim_double );
 jim_double jim_f64_rem( jim_double, jim_double );
 jim_double jim_f64_sqrt( jim_double );
-bool jim_f64_eq( jim_double, jim_double );
-bool jim_f64_le( jim_double, jim_double );
-bool jim_f64_lt( jim_double, jim_double );
-bool jim_f64_eq_signaling( jim_double, jim_double );
-bool jim_f64_le_quiet( jim_double, jim_double );
-bool jim_f64_lt_quiet( jim_double, jim_double );
-bool jim_f64_isSignalingNaN( jim_double );
+int jim_f64_eq( jim_double, jim_double );
+int jim_f64_le( jim_double, jim_double );
+int jim_f64_lt( jim_double, jim_double );
+int jim_f64_eq_signaling( jim_double, jim_double );
+int jim_f64_le_quiet( jim_double, jim_double );
+int jim_f64_lt_quiet( jim_double, jim_double );
+int jim_f64_isSignalingNaN( jim_double );
 
 #endif
