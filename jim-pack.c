@@ -1,13 +1,6 @@
 #include <string.h>
 #include <jim.h>
-
-#ifndef HAVE_SOFTFLOAT
-#define jim_float_to_double(a) ((double)(a))
-#define jim_double_to_float(a) ((float)(a))
-#else
-#define jim_float_to_double(a) (jim_f32_to_f64(a))
-#define jim_double_to_float(a) (jim_f64_to_f32(a))
-#endif
+#include <jim-floats.h>
 
 /* Provides the [pack] and [unpack] commands to pack and unpack
  * a binary string to/from arbitrary width integers and strings.
