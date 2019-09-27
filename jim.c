@@ -58,51 +58,9 @@
 #include <setjmp.h>
 
 #include "jim.h"
+#include "jim-floats.h"
 #include "jimautoconf.h"
 #include "utf8.h"
-
-#ifndef HAVE_SOFTFLOAT
-#define jim_strtod strtod
-#define jim_isnan isnan
-#define jim_isinf isinf
-#define jim_lt(a,b) (a < b)
-#define jim_le(a,b) (a <= b)
-#define jim_gt(a,b) (a > b)
-#define jim_ge(a,b) (a >= b)
-#define jim_eq(a,b) (a == b)
-#define jim_neq(a,b) (a != b)
-#define jim_add(a,b) (a+b)
-#define jim_sub(a,b) (a-b)
-#define jim_mul(a,b) (a*b)
-#define jim_div(a,b) (a/b)
-#define jim_zero 0
-#define jim_one 1
-#define jim_minusone -1
-#define jim_half 0.5
-#define jim_wide_to_double(a) ((jim_double)(a))
-#define jim_double_to_wide(a) ((jim_wide)(a))
-#else
-#include "jim-softfloat-internals.h"
-#define jim_strtod(a,b) (*(jim_double *)0)
-#define jim_isnan(a) 0
-#define jim_isinf(a) 0
-#define jim_lt(a,b) jim_f64_lt(a, b)
-#define jim_le(a,b) jim_f64_le(a, b)
-#define jim_gt(a,b) jim_f64_lt(b, a)
-#define jim_ge(a,b) jim_f64_le(b, a)
-#define jim_eq(a,b) jim_f64_eq(a, b)
-#define jim_neq(a,b) !jim_f64_eq(a, b)
-#define jim_add(a,b) (jim_f64_add((a),(b)))
-#define jim_sub(a,b) (jim_f64_sub((a),(b)))
-#define jim_mul(a,b) (jim_f64_mul((a),(b)))
-#define jim_div(a,b) (jim_f64_div((a),(b)))
-#define jim_zero (jim_i32_to_f64(0))
-#define jim_one (jim_i32_to_f64(1))
-#define jim_minusone (jim_i32_to_f64(-1))
-#define jim_half (jim_f64_div(jim_i32_to_f64(1), jim_i32_to_f64(2)))
-#define jim_wide_to_double(a) (jim_i64_to_f64(a))
-#define jim_double_to_wide(a) (jim_f64_to_i64(a, jim_softfloat_round_near_even, 1))
-#endif
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
