@@ -35,12 +35,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =============================================================================*/
 
 #include "jim.h"
-
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "softfloat.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
 jim_float jim_wide_to_float( jim_wide a )
 {
