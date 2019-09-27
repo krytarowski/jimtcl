@@ -34,10 +34,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#ifndef softfloat_h
-#define softfloat_h 1
+#ifndef JIM_SOFTFLOAT_H
+#define JIM_SOFTFLOAT_H
 
 #include <jim.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*----------------------------------------------------------------------------
 | Software floating-point underflow tininess-detection mode.
@@ -53,6 +57,9 @@ typedef struct { jim_uint64_t v; } jim_double;
 JIM_CTASSERT(sizeof(jim_uint8_t) == 1);
 JIM_CTASSERT(sizeof(jim_uint32_t) == 4);
 JIM_CTASSERT(sizeof(jim_uint64_t) == 8);
+
+JIM_CTASSERT(sizeof(jim_uint32_t) == sizeof(jim_float));
+JIM_CTASSERT(sizeof(jim_uint64_t) == sizeof(jim_double));
 
 /*----------------------------------------------------------------------------
 | Software floating-point underflow tininess-detection mode.
@@ -161,5 +168,9 @@ int jim_f64_eq_signaling( jim_double, jim_double );
 int jim_f64_le_quiet( jim_double, jim_double );
 int jim_f64_lt_quiet( jim_double, jim_double );
 int jim_f64_isSignalingNaN( jim_double );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
