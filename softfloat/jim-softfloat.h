@@ -182,7 +182,7 @@ jim_double jim_double_hypot( jim_double );
 jim_double jim_double_fmod( jim_double );
 
 jim_double jim_strtod( const char *, char ** );
-int jim_stod( jim_float, const char *, char *, unsigned int );
+int jim_stod( jim_double, const char *, char *, unsigned int );
 
 /*----------------------------------------------------------------------------
 | jimtcl soft float/double commonly used constants
