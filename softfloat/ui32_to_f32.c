@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 jim_float jim_ui32_to_f32( jim_uint32_t a )
 {
-    union ui32_f32 uZ;
+    union jim_ui32_f32 uZ;
 
     if ( ! a ) {
         uZ.ui = 0;
