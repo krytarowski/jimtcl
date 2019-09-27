@@ -71,6 +71,20 @@
 #warning "sub-second sleep not supported"
 #endif
 
+#ifndef HAVE_SOFTFLOAT
+#define jim_mul(a,b) (a*b)
+#define jim_zero 0
+#define jim_thousand 1e3
+#define jim_wide_to_double(a) ((jim_double)(a))
+#define jim_double_to_wide(a) ((jim_wide)(a))
+#else
+#define jim_mul(a,b) (jim_f64_mul((a),(b)))
+#define jim_zero (jim_i32_to_f64(0))
+#define jim_thousand (jim_i32_to_f64(1e3))
+#define jim_wide_to_double(a) (jim_i64_to_f64(a))
+#define jim_double_to_wide(a) (jim_f64_to_i64(a, jim_softfloat_round_near_even, 1)) 
+#endif
+
 /* --- */
 
 /* File event structure */
@@ -630,7 +644,7 @@ static void JimAfterTimeEventFinalizer(Jim_Interp *interp, void *clientData)
 static int JimELAfterCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
 {
     Jim_EventLoop *eventLoop = Jim_CmdPrivData(interp);
-    double ms = 0;
+    jim_double ms = jim_zero;
     jim_wide id;
     Jim_Obj *objPtr, *idObjPtr;
     static const char * const options[] = {
@@ -652,7 +666,7 @@ static int JimELAfterCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
     }
     else if (argc == 2) {
         /* Simply a sleep */
-        usleep(ms * 1000);
+        usleep(jim_double_to_wide(jim_mul(ms, jim_thousand)));
         return JIM_OK;
     }
 
@@ -666,7 +680,7 @@ static int JimELAfterCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         case AFTER_CREATE: {
             Jim_Obj *scriptObj = Jim_ConcatObj(interp, argc - 2, argv + 2);
             Jim_IncrRefCount(scriptObj);
-            id = Jim_CreateTimeHandler(interp, (jim_wide)(ms * 1000), JimAfterTimeHandler, scriptObj,
+            id = Jim_CreateTimeHandler(interp, jim_double_to_wide(jim_mul(ms, jim_thousand)), JimAfterTimeHandler, scriptObj,
                 JimAfterTimeEventFinalizer);
             objPtr = Jim_NewStringObj(interp, NULL, 0);
             Jim_AppendString(interp, objPtr, "after#", -1);
