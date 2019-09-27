@@ -500,7 +500,7 @@ define EXTRA_OBJS $extra_objs
 # Restore the user-specified LIBS
 define LIBS $LIBS
 
-make-config-header jim-config.h -auto {HAVE_LONG_LONG* JIM_UTF8} -bare JIM_VERSION -none *
+make-config-header jim-config.h -auto {HAVE_LONG_LONG* JIM_UTF8 HAVE_SOFTFLOAT} -bare JIM_VERSION -none *
 make-config-header jimautoconf.h -auto {jim_ext_* TCL_PLATFORM_* TCL_LIBRARY USE_* JIM_* _FILE_OFFSET*} -bare {S_I*}
 make-template Makefile.in
 make-template tests/Makefile.in
