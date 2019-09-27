@@ -86,6 +86,19 @@ extern "C" {
 #endif
 
 /* -----------------------------------------------------------------------------
+ * SoftFloat IEEE emulation.
+ * ---------------------------------------------------------------------------*/
+
+#ifdef HAVE_SOFTFLOAT
+typedef float jim_float;
+typedef double jim_double;
+#else
+/* The emulation fallback depends on inttypes.h */
+typedef struct { uint32_t v; } jim_float;
+typedef struct { uint64_t v; } jim_double;
+#endif
+
+/* -----------------------------------------------------------------------------
  * Compiler specific fixes.
  * ---------------------------------------------------------------------------*/
 
@@ -285,7 +298,7 @@ typedef struct Jim_Obj {
         /* generic integer value (e.g. index, return code) */
         int intValue;
         /* double number type */
-        double doubleValue;
+        jim_double doubleValue;
         /* Generic pointer */
         void *ptr;
         /* Generic two pointers value */
@@ -835,10 +848,10 @@ JIM_EXPORT Jim_Obj * Jim_NewIntObj (Jim_Interp *interp,
 
 /* double object */
 JIM_EXPORT int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr,
-        double *doublePtr);
+        jim_double *doublePtr);
 JIM_EXPORT void Jim_SetDouble(Jim_Interp *interp, Jim_Obj *objPtr,
-        double doubleValue);
-JIM_EXPORT Jim_Obj * Jim_NewDoubleObj(Jim_Interp *interp, double doubleValue);
+        jim_double doubleValue);
+JIM_EXPORT Jim_Obj * Jim_NewDoubleObj(Jim_Interp *interp, jim_double doubleValue);
 
 /* commands utilities */
 JIM_EXPORT void Jim_WrongNumArgs (Jim_Interp *interp, int argc,
