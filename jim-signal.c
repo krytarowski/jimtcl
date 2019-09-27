@@ -7,12 +7,35 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "jim.h"
+
 #include "jimautoconf.h"
 #ifdef HAVE_UNISTD_H
     #include <unistd.h>
 #endif
 #include <jim-subcmd.h>
 #include <jim-signal.h>
+
+#ifndef HAVE_SOFTFLOAT
+#define jim_lt(a,b) (a < b)
+#define jim_mul(a,b) (a*b)
+#define jim_one 1
+#define jim_million 1e6
+#define jim_wide_to_double(a) ((jim_double)(a))
+#define jim_double_to_wide(a) ((jim_wide)(a))
+#define jim_fraqt(a) (a-(jim_wide)a)
+#else
+#include "jim-softfloat.h"
+#include "jim-softfloat-internals.h"
+#define jim_lt(a,b) jim_f64_lt(a, b)
+#define jim_sub(a,b) (jim_f64_sub((a),(b)))
+#define jim_mul(a,b) (jim_f64_mul((a),(b)))
+#define jim_one (jim_i32_to_f64(1))
+#define jim_million (jim_i32_to_f64(1e6))
+#define jim_wide_to_double(a) (jim_i64_to_f64(a))
+#define jim_double_to_wide(a) (jim_f64_to_i64(a, jim_softfloat_round_near_even, 1))
+#define jim_fraqt(a) jim_sub(a,jim_wide_to_double(jim_double_to_wide(a)))
+#endif
 
 #define MAX_SIGNALS_WIDE (sizeof(jim_wide) * 8)
 #if defined(NSIG)
@@ -445,7 +468,7 @@ static int Jim_AlarmCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
                 ualarm(jim_double_to_wide(jim_mul(t,jim_million)), 0);
             }
             else {
-                alarm(t);
+                alarm(jim_double_to_wide(t));
             }
         }
 #else
@@ -470,14 +493,14 @@ static int Jim_SleepCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         return JIM_ERR;
     }
     else {
-        double t;
+        jim_double t;
 
         ret = Jim_GetDouble(interp, argv[1], &t);
         if (ret == JIM_OK) {
 #ifdef HAVE_USLEEP
-            usleep((int)((t - (int)t) * 1e6));
+            usleep(jim_double_to_wide(jim_mul(jim_fraqt(t), jim_million)));
 #endif
-            sleep(t);
+            sleep(jim_double_to_wide(t));
         }
     }
 
