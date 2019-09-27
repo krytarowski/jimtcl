@@ -12,3 +12,8 @@ Subject: [PATCH] Fix typo in function 'softfloat_propagateNaNF128M' for
  RISC-V.
 
 This version has been heavily reduced and modified to support jimtcl.
+
+There are included additional functions cherry-picked and modified from
+NetBSD:
+
+strtod.c originates from: NetBSD src/lib/libc/gdtoa/strtod.c r.1.15

@@ -34,21 +34,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-softfloat.h"
+#include "jim-softfloat-internals.h"
 
-float32_t
- softfloat_roundPackToF32( bool sign, int_fast16_t exp, uint_fast32_t sig )
+jim_float
+jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
 {
-    uint_fast8_t roundingMode;
-    bool roundNearEven;
-    uint_fast8_t roundIncrement, roundBits;
-    bool isTiny;
-    uint_fast32_t uiZ;
-    union ui32_f32 uZ;
+    jim_uint8_t roundingMode;
+    int roundNearEven;
+    jim_uint8_t roundIncrement, roundBits;
+    int isTiny;
+    jim_uint32_t uiZ;
+    union jim_ui32_f32 uZ;
 
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
@@ -110,4 +108,3 @@ float32_t
     return uZ.f;
 
 }
-
