@@ -129,6 +129,12 @@ jim_isnan(jim_double d)
         return jim_isNaNF64UI(a);
 }
 
+static inline jim_double
+jim_infinity(void)
+{
+	return packToF64UI(0, 0x7FF, 0);
+}
+
 struct exp16_sig64 { int_fast16_t exp; uint_fast64_t sig; };
 struct exp16_sig64 softfloat_normSubnormalF64Sig( uint_fast64_t );
 
