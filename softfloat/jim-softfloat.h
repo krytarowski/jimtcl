@@ -41,6 +41,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef HAVE_SOFTFLOAT
 
+#ifndef HAVE_LONG_LONG
+#error Configuration not supported
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
