@@ -58,6 +58,7 @@
 #include <setjmp.h>
 
 #include "jim.h"
+#include "jim-floats.h"
 #include "jimautoconf.h"
 #include "utf8.h"
 
@@ -71,8 +72,10 @@
 #include <crt_externs.h>
 #endif
 
+#ifndef HAVE_SOFTFLOAT
 /* For INFINITY, even if math functions are not enabled */
 #include <math.h>
+#endif
 
 /* We may decide to switch to using $[...] after all, so leave it as an option */
 /*#define EXPRSUGAR_BRACKET*/
@@ -564,14 +567,14 @@ int Jim_StringToWide(const char *str, jim_wide * widePtr, int base)
     return JimCheckConversion(str, endptr);
 }
 
-int Jim_StringToDouble(const char *str, double *doublePtr)
+int Jim_StringToDouble(const char *str, jim_double *doublePtr)
 {
     char *endptr;
 
     /* Callers can check for underflow via ERANGE */
     errno = 0;
 
-    *doublePtr = strtod(str, &endptr);
+    *doublePtr = jim_strtod(str, &endptr);
 
     return JimCheckConversion(str, endptr);
 }
@@ -2996,7 +2999,7 @@ static int JimStringIs(Jim_Interp *interp, Jim_Obj *strObjPtr, Jim_Obj *strClass
 
         case STR_IS_DOUBLE:
             {
-                double d;
+                jim_double d;
                 Jim_SetResultBool(interp, Jim_GetDouble(interp, strObjPtr, &d) == JIM_OK && errno != ERANGE);
                 return JIM_OK;
             }
@@ -6014,24 +6017,24 @@ static const Jim_ObjType doubleObjType = {
 };
 
 #ifndef HAVE_ISNAN
-#undef isnan
-#define isnan(X) ((X) != (X))
+#undef jim_double_isnan
+#define jim_double_isnan(X) ((X) != (X))
 #endif
 #ifndef HAVE_ISINF
-#undef isinf
-#define isinf(X) (1.0 / (X) == 0.0)
+#undef jim_double_isinf
+#define jim_double_isinf(X) (1.0 / (X) == 0.0)
 #endif
 
 static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
 {
-    double value = objPtr->internalRep.doubleValue;
+    jim_double value = objPtr->internalRep.doubleValue;
 
-    if (isnan(value)) {
+    if (jim_double_isnan(value)) {
         JimSetStringBytes(objPtr, "NaN");
         return;
     }
-    if (isinf(value)) {
-        if (value < 0) {
+    if (jim_double_isinf(value)) {
+        if (jim_double_lt(value, JIM_DOUBLE_ZERO)) {
             JimSetStringBytes(objPtr, "-Inf");
         }
         else {
@@ -6042,7 +6045,7 @@ static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
     {
         char buf[JIM_DOUBLE_SPACE + 1];
         int i;
-        int len = sprintf(buf, "%.12g", value);
+        int len = jim_stod(value, "%.12g", buf, sizeof(buf));
 
         /* Add a final ".0" if necessary */
         for (i = 0; i < len; i++) {
@@ -6072,7 +6075,7 @@ static void UpdateStringOfDouble(struct Jim_Obj *objPtr)
 
 static int SetDoubleFromAny(Jim_Interp *interp, Jim_Obj *objPtr)
 {
-    double doubleValue;
+    jim_double doubleValue;
     jim_wide wideValue;
     const char *str;
 
@@ -6116,17 +6119,17 @@ static int SetDoubleFromAny(Jim_Interp *interp, Jim_Obj *objPtr)
     return JIM_OK;
 }
 
-int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr, double *doublePtr)
+int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr, jim_double *doublePtr)
 {
     if (objPtr->typePtr == &coercedDoubleObjType) {
-        *doublePtr = JimWideValue(objPtr);
+        *doublePtr = jim_wide_to_double(JimWideValue(objPtr));
         return JIM_OK;
     }
     if (objPtr->typePtr != &doubleObjType && SetDoubleFromAny(interp, objPtr) == JIM_ERR)
         return JIM_ERR;
 
     if (objPtr->typePtr == &coercedDoubleObjType) {
-        *doublePtr = JimWideValue(objPtr);
+        *doublePtr = jim_wide_to_double(JimWideValue(objPtr));
     }
     else {
         *doublePtr = objPtr->internalRep.doubleValue;
@@ -6134,7 +6137,7 @@ int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr, double *doublePtr)
     return JIM_OK;
 }
 
-Jim_Obj *Jim_NewDoubleObj(Jim_Interp *interp, double doubleValue)
+Jim_Obj *Jim_NewDoubleObj(Jim_Interp *interp, jim_double doubleValue)
 {
     Jim_Obj *objPtr;
 
@@ -6663,16 +6666,16 @@ static int ListSortInteger(Jim_Obj **lhsObj, Jim_Obj **rhsObj)
 
 static int ListSortReal(Jim_Obj **lhsObj, Jim_Obj **rhsObj)
 {
-    double lhs = 0, rhs = 0;
+    jim_double lhs = JIM_DOUBLE_ZERO, rhs = JIM_DOUBLE_ZERO;
 
     if (Jim_GetDouble(sort_info->interp, *lhsObj, &lhs) != JIM_OK ||
         Jim_GetDouble(sort_info->interp, *rhsObj, &rhs) != JIM_OK) {
         longjmp(sort_info->jmpbuf, JIM_ERR);
     }
-    if (lhs == rhs) {
+    if (jim_double_eq(lhs, rhs)) {
         return 0;
     }
-    if (lhs > rhs) {
+    if (jim_double_gt(lhs, rhs)) {
         return sort_info->order;
     }
     return -sort_info->order;
@@ -7741,7 +7744,7 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
 {
     int intresult = 1;
     int rc;
-    double dA, dC = 0;
+    jim_double dA, dC = JIM_DOUBLE_ZERO;
     jim_wide wA, wC = 0;
     Jim_Obj *A;
 
@@ -7758,7 +7761,7 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
                 wC = wA;
                 break;
             case JIM_EXPROP_FUNC_DOUBLE:
-                dC = wA;
+                dC = jim_wide_to_double(wA);
                 intresult = 0;
                 break;
             case JIM_EXPROP_FUNC_ABS:
@@ -7778,10 +7781,10 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
         switch (node->type) {
             case JIM_EXPROP_FUNC_INT:
             case JIM_EXPROP_FUNC_WIDE:
-                wC = dA;
+                wC = jim_double_to_wide(dA);
                 break;
             case JIM_EXPROP_FUNC_ROUND:
-                wC = dA < 0 ? (dA - 0.5) : (dA + 0.5);
+                wC = jim_double_to_wide(jim_double_lt(dA, JIM_DOUBLE_ZERO) ? jim_double_sub(dA, JIM_DOUBLE_HALF) : jim_double_add(dA, JIM_DOUBLE_HALF));
                 break;
             case JIM_EXPROP_FUNC_DOUBLE:
             case JIM_EXPROP_UNARYPLUS:
@@ -7792,16 +7795,16 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
 #ifdef JIM_MATH_FUNCTIONS
                 dC = fabs(dA);
 #else
-                dC = dA >= 0 ? dA : -dA;
+                dC = jim_double_ge(dA, JIM_DOUBLE_ZERO) ? dA : jim_double_mul(dA, JIM_DOUBLE_MINUSONE);
 #endif
                 intresult = 0;
                 break;
             case JIM_EXPROP_UNARYMINUS:
-                dC = -dA;
+                dC = jim_double_mul(dA, JIM_DOUBLE_MINUSONE);
                 intresult = 0;
                 break;
             case JIM_EXPROP_NOT:
-                wC = !dA;
+                wC = jim_double_eq(dA, JIM_DOUBLE_ZERO);
                 break;
             default:
                 abort();
@@ -7822,12 +7825,16 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
     return rc;
 }
 
-static double JimRandDouble(Jim_Interp *interp)
+static jim_double JimRandDouble(Jim_Interp *interp)
 {
-    unsigned long x;
-    JimRandomBytes(interp, &x, sizeof(x));
+    unsigned long x1, x2;
 
-    return (double)x / (unsigned long)~0;
+    JimRandomBytes(interp, &x1, sizeof(x1));
+    x1 >>= 1; /* Trim signedness bit as jim_wide is signed */
+
+    x2 = (~(0UL))>>1; /* LONG_MAX */
+
+    return jim_double_div(jim_wide_to_double(x1), jim_wide_to_double(x2));
 }
 
 static int JimExprOpIntUnary(Jim_Interp *interp, struct JimExprNode *node)
@@ -7873,7 +7880,7 @@ static int JimExprOpNone(Jim_Interp *interp, struct JimExprNode *node)
 static int JimExprOpDoubleUnary(Jim_Interp *interp, struct JimExprNode *node)
 {
     int rc;
-    double dA, dC;
+    jim_double dA, dC;
     Jim_Obj *A;
 
     if ((rc = JimExprGetTerm(interp, node->left, &A)) != JIM_OK) {
@@ -8042,7 +8049,7 @@ static int JimExprOpIntBin(Jim_Interp *interp, struct JimExprNode *node)
 static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
 {
     int rc = JIM_OK;
-    double dA, dB, dC = 0;
+    jim_double dA, dB, dC = JIM_DOUBLE_ZERO;
     jim_wide wA, wB, wC = 0;
     Jim_Obj *A, *B;
 
@@ -8138,56 +8145,57 @@ static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
 #else
             case JIM_EXPROP_POW:
             case JIM_EXPROP_FUNC_POW:
-                dC = pow(dA, dB);
+                dC = jim_double_pow(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_FUNC_ATAN2:
-                dC = atan2(dA, dB);
+                dC = jim_double_atan2(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_FUNC_HYPOT:
-                dC = hypot(dA, dB);
+                dC = jim_double_hypot(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_FUNC_FMOD:
-                dC = fmod(dA, dB);
+                dC = jim_double_fmod(dA, dB);
                 goto doubleresult;
 #endif
             case JIM_EXPROP_ADD:
-                dC = dA + dB;
+                dC = jim_double_add(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_SUB:
-                dC = dA - dB;
+                dC = jim_double_sub(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_MUL:
-                dC = dA * dB;
+                dC = jim_double_mul(dA, dB);
                 goto doubleresult;
             case JIM_EXPROP_DIV:
-                if (dB == 0) {
+                if (jim_double_eq(dB, JIM_DOUBLE_ZERO)) {
 #ifdef INFINITY
-                    dC = dA < 0 ? -INFINITY : INFINITY;
+                    dC = jim_double_lt(dA, JIM_DOUBLE_ZERO) ? jim_double_mul(JIM_DOUBLE_MINUSONE, INFINITY) : INFINITY;
 #else
-                    dC = (dA < 0 ? -1.0 : 1.0) * strtod("Inf", NULL);
+                    dC = jim_double_lt(dA, JIM_DOUBLE_ZERO) ? JIM_DOUBLE_MINUSONE : JIM_DOUBLE_ONE;
+                    dC = jim_double_mul(dC, jim_strtod("Inf", NULL));
 #endif
                 }
                 else {
-                    dC = dA / dB;
+                    dC = jim_double_div(dA, dB);
                 }
                 goto doubleresult;
             case JIM_EXPROP_LT:
-                wC = dA < dB;
+                wC = jim_double_lt(dA, dB);
                 goto intresult;
             case JIM_EXPROP_GT:
-                wC = dA > dB;
+                wC = jim_double_gt(dA, dB);
                 goto intresult;
             case JIM_EXPROP_LTE:
-                wC = dA <= dB;
+                wC = jim_double_le(dA, dB);
                 goto intresult;
             case JIM_EXPROP_GTE:
-                wC = dA >= dB;
+                wC = jim_double_ge(dA, dB);
                 goto intresult;
             case JIM_EXPROP_NUMEQ:
-                wC = dA == dB;
+                wC = jim_double_eq(dA, dB);
                 goto intresult;
             case JIM_EXPROP_NUMNE:
-                wC = dA != dB;
+                wC = jim_double_neq(dA, dB);
                 goto intresult;
         }
     }
@@ -8290,7 +8298,7 @@ static int JimExprOpStrBin(Jim_Interp *interp, struct JimExprNode *node)
 static int ExprBool(Jim_Interp *interp, Jim_Obj *obj)
 {
     long l;
-    double d;
+    jim_double d;
     int b;
     int ret = -1;
 
@@ -8301,7 +8309,7 @@ static int ExprBool(Jim_Interp *interp, Jim_Obj *obj)
         ret = (l != 0);
     }
     else if (Jim_GetDouble(interp, obj, &d) == JIM_OK) {
-        ret = (d != 0);
+        ret = jim_double_neq(d, JIM_DOUBLE_ZERO);
     }
     else if (Jim_GetBoolean(interp, obj, &b) == JIM_OK) {
         ret = (b != 0);
@@ -8558,7 +8566,7 @@ static int JimParseExprNumber(struct JimParserCtx *pc)
         /* Some stupid compilers insist they are cleverer that
          * we are. Even a (void) cast doesn't prevent this warning!
          */
-        if (strtod(pc->tstart, &end)) { /* nothing */ }
+        if (jim_double_to_wide(jim_strtod(pc->tstart, &end))) { /* nothing */ }
         if (end == pc->tstart)
             return JIM_ERR;
         if (end > pc->p) {
@@ -9002,7 +9010,7 @@ missingoperand:
                     objPtr = Jim_NewIntObj(interp, jim_strtoull(t->token, &endptr));
                 }
                 else {
-                    objPtr = Jim_NewDoubleObj(interp, strtod(t->token, &endptr));
+                    objPtr = Jim_NewDoubleObj(interp, jim_strtod(t->token, &endptr));
                 }
                 if (endptr != t->token + t->len) {
                     /* Conversion failed, so just store it as a string */
@@ -9845,7 +9853,7 @@ static int ScanOneEntry(Jim_Interp *interp, const char *str, int pos, int strLen
             case 'f':
             case 'g':{
                     char *endp;
-                    double value = strtod(tok, &endp);
+                    jim_double value = jim_strtod(tok, &endp);
 
                     if (endp != tok) {
                         /* There was some number sucessfully scanned! */
@@ -11351,7 +11359,7 @@ static int Jim_PutsCoreCommand(Jim_Interp *interp, int argc, Jim_Obj *const *arg
 static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, int op)
 {
     jim_wide wideValue, res;
-    double doubleValue, doubleRes;
+    jim_double doubleValue, doubleRes;
     int i;
 
     res = (op == JIM_EXPROP_ADD) ? 0 : 1;
@@ -11367,14 +11375,14 @@ static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
     Jim_SetResultInt(interp, res);
     return JIM_OK;
   trydouble:
-    doubleRes = (double)res;
+    doubleRes = jim_wide_to_double(res);
     for (; i < argc; i++) {
         if (Jim_GetDouble(interp, argv[i], &doubleValue) != JIM_OK)
             return JIM_ERR;
         if (op == JIM_EXPROP_ADD)
-            doubleRes += doubleValue;
+            doubleRes = jim_double_add(doubleRes, doubleValue);
         else
-            doubleRes *= doubleValue;
+            doubleRes = jim_double_mul(doubleRes, doubleValue);
     }
     Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
     return JIM_OK;
@@ -11384,7 +11392,7 @@ static int JimAddMulHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
 static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, int op)
 {
     jim_wide wideValue, res = 0;
-    double doubleValue, doubleRes = 0;
+    jim_double doubleValue, doubleRes = JIM_DOUBLE_ZERO;
     int i = 2;
 
     if (argc < 2) {
@@ -11400,9 +11408,9 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
             }
             else {
                 if (op == JIM_EXPROP_SUB)
-                    doubleRes = -doubleValue;
+                    doubleRes = jim_double_mul(JIM_DOUBLE_MINUSONE, doubleValue);
                 else
-                    doubleRes = 1.0 / doubleValue;
+                    doubleRes = jim_double_div(JIM_DOUBLE_ONE, doubleValue);
                 Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
                 return JIM_OK;
             }
@@ -11412,7 +11420,7 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
             Jim_SetResultInt(interp, res);
         }
         else {
-            doubleRes = 1.0 / wideValue;
+            doubleRes = jim_double_div(JIM_DOUBLE_ONE, jim_wide_to_double(wideValue));
             Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
         }
         return JIM_OK;
@@ -11430,7 +11438,7 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
     }
     for (i = 2; i < argc; i++) {
         if (Jim_GetWide(interp, argv[i], &wideValue) != JIM_OK) {
-            doubleRes = (double)res;
+            doubleRes = jim_wide_to_double(res);
             goto trydouble;
         }
         if (op == JIM_EXPROP_SUB)
@@ -11450,9 +11458,9 @@ static int JimSubDivHelper(Jim_Interp *interp, int argc, Jim_Obj *const *argv, i
         if (Jim_GetDouble(interp, argv[i], &doubleValue) != JIM_OK)
             return JIM_ERR;
         if (op == JIM_EXPROP_SUB)
-            doubleRes -= doubleValue;
+            doubleRes = jim_double_sub(doubleRes, doubleValue);
         else
-            doubleRes /= doubleValue;
+            doubleRes = jim_double_div(doubleRes, doubleValue);
     }
     Jim_SetResult(interp, Jim_NewDoubleObj(interp, doubleRes));
     return JIM_OK;

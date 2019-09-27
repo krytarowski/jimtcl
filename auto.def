@@ -15,6 +15,7 @@ options {
     utf8            => "include support for utf8-encoded strings"
     lineedit=1      => "disable line editing"
     references=1    => "disable support for references"
+    softfloat       => "enable SoftFloat IEEE emulation"
     math            => "include support for math functions"
     ssl             => "include ssl/tls support in the aio extension"
     ipv6            => "include ipv6 support in the aio extension"
@@ -88,6 +89,7 @@ if {"-Werror" in [get-define CFLAGS] && [cctest -cflags -Wno-error]} {
 
 cc-check-types "long long"
 
+define CPPFLAGS ""
 define CCOPTS ""
 define CXXOPTS ""
 if {[cctest -cflags -fno-unwind-tables]} {
@@ -301,6 +303,29 @@ if {[opt-bool references]} {
     msg-result "Enabling references"
     define JIM_REFERENCES
 }
+if {[opt-bool softfloat]} {
+    msg-result "Enabling SoftFloat IEEE emulation"
+    define HAVE_SOFTFLOAT
+    define-append CPPFLAGS -Isoftfloat/
+    lappend extra_objs softfloat/jim_wide_to_float.o softfloat/jim_wide_to_double.o
+    lappend extra_objs softfloat/jim_s_normRoundPackToF64.o softfloat/jim_s_countLeadingZeros64.o softfloat/jim_s_roundPackToF64.o
+    lappend extra_objs softfloat/jim_s_roundPackToF32.o softfloat/jim_s_countLeadingZeros8.o softfloat/jim_softfloat_state.o
+    lappend extra_objs softfloat/jim_double_to_wide.o softfloat/jim_s_roundMToI64.o softfloat/jim_s_shiftRightJamM.o
+    lappend extra_objs softfloat/jim_s_shortShiftRightJamM.o softfloat/jim_double_mul.o softfloat/jim_s_mul64To128M.o
+    lappend extra_objs softfloat/jim_s_normSubnormalF64Sig.o softfloat/jim_double_div.o softfloat/jim_s_approxRecip32_1.o
+    lappend extra_objs softfloat/jim_s_approxRecip_1Ks.o softfloat/jim_double_sub.o softfloat/jim_s_subMagsF64.o
+    lappend extra_objs softfloat/jim_s_addMagsF64.o softfloat/jim_double_eq.o softfloat/jim_double_neq.o
+    lappend extra_objs softfloat/jim_double_add.o softfloat/jim_double_isnan.o softfloat/jim_double_lt.o
+    lappend extra_objs softfloat/jim_double_le.o softfloat/jim_double_gt.o softfloat/jim_double_ge.o
+    lappend extra_objs softfloat/jim_double_isinf.o softfloat/jim_double_to_float.o softfloat/jim_float_to_double.o
+    lappend extra_objs softfloat/jim_s_normSubnormalF32Sig.o
+    lappend extra_objs softfloat/8086/jim_softfloat_raiseFlags.o softfloat/8086/jim_s_propagateNaNF64UI.o
+    lappend extra_objs softfloat/8086/jim_s_f64UIToCommonNaN.o softfloat/8086/jim_s_commonNaNToF32UI.o
+    lappend extra_objs softfloat/8086/jim_s_f32UIToCommonNaN.o softfloat/8086/jim_s_commonNaNToF64UI.o
+    lappend extra_objs softfloat/jim_stod.o softfloat/jim_strtod.o
+} else {
+    lappend extra_objs jim-floats.o
+}
 if {[opt-bool shared with-jim-shared]} {
     msg-result "Building shared library"
 } else {
@@ -495,7 +520,7 @@ define EXTRA_OBJS $extra_objs
 # Restore the user-specified LIBS
 define LIBS $LIBS
 
-make-config-header jim-config.h -auto {HAVE_LONG_LONG* JIM_UTF8} -bare JIM_VERSION -none *
+make-config-header jim-config.h -auto {HAVE_LONG_LONG* JIM_UTF8 HAVE_SOFTFLOAT} -bare JIM_VERSION -none *
 make-config-header jimautoconf.h -auto {jim_ext_* TCL_PLATFORM_* TCL_LIBRARY USE_* JIM_* _FILE_OFFSET*} -bare {S_I*}
 make-template Makefile.in
 make-template tests/Makefile.in

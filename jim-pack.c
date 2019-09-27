@@ -1,5 +1,6 @@
 #include <string.h>
 #include <jim.h>
+#include <jim-floats.h>
 
 /* Provides the [pack] and [unpack] commands to pack and unpack
  * a binary string to/from arbitrary width integers and strings.
@@ -198,15 +199,15 @@ static void JimSetBitsIntLittleEndian(unsigned char *bitvec, jim_wide value, int
  *
  * Should work for both little- and big-endian platforms.
  */
-static float JimIntToFloat(jim_wide value)
+static jim_float JimIntToFloat(jim_wide value)
 {
     int offs;
-    float val;
+    jim_float val;
 
     /* Skip offs to get to least significant bytes */
-    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(float)) : 0;
+    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(jim_float)) : 0;
 
-    memcpy(&val, (unsigned char *) &value + offs, sizeof(float));
+    memcpy(&val, (unsigned char *) &value + offs, sizeof(jim_float));
     return val;
 }
 
@@ -215,15 +216,15 @@ static float JimIntToFloat(jim_wide value)
  *
  * Double precision version of JimIntToFloat
  */
-static double JimIntToDouble(jim_wide value)
+static jim_double JimIntToDouble(jim_wide value)
 {
     int offs;
-    double val;
+    jim_double val;
 
     /* Skip offs to get to least significant bytes */
-    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(double)) : 0;
+    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(jim_double)) : 0;
 
-    memcpy(&val, (unsigned char *) &value + offs, sizeof(double));
+    memcpy(&val, (unsigned char *) &value + offs, sizeof(jim_double));
     return val;
 }
 
@@ -235,7 +236,7 @@ static double JimIntToDouble(jim_wide value)
  *
  * Should work for both little- and big-endian platforms.
  */
-static jim_wide JimFloatToInt(float value)
+static jim_wide JimFloatToInt(jim_float value)
 {
     int offs;
     jim_wide val = 0;
@@ -252,15 +253,15 @@ static jim_wide JimFloatToInt(float value)
  *
  * Double precision version of JimFloatToInt
  */
-static jim_wide JimDoubleToInt(double value)
+static jim_wide JimDoubleToInt(jim_double value)
 {
     int offs;
     jim_wide val = 0;
 
     /* Skip offs to get to least significant bytes */
-    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(double)) : 0;
+    offs = Jim_IsBigEndian() ? (sizeof(jim_wide) - sizeof(jim_double)) : 0;
 
-    memcpy((unsigned char *) &val + offs, &value, sizeof(double));
+    memcpy((unsigned char *) &val + offs, &value, sizeof(jim_double));
     return val;
 }
 
@@ -341,9 +342,9 @@ static int Jim_UnpackCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         }
 
         if (option == OPT_FLOATBE || option == OPT_FLOATLE) {
-            double fresult;
+            jim_double fresult;
             if (width == 32) {
-                fresult = (double) JimIntToFloat(result);
+                fresult = jim_float_to_double(JimIntToFloat(result));
             } else if (width == 64) {
                 fresult = JimIntToDouble(result);
             } else {
@@ -377,7 +378,7 @@ static int Jim_PackCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
     jim_wide pos = 0;
     jim_wide width;
     jim_wide value;
-    double fvalue;
+    jim_double fvalue;
     Jim_Obj *stringObjPtr;
     int len;
     int freeobj = 0;
@@ -448,7 +449,7 @@ static int Jim_PackCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
          * In Tcl floating overflow gives FLT_MAX (cf. test binary-13.13).
          * In Jim Tcl it gives Infinity. This behavior may change.
          */
-        value = (width == 32) ? JimFloatToInt((float)fvalue) : JimDoubleToInt(fvalue);
+        value = (width == 32) ? JimFloatToInt(jim_double_to_float(fvalue)) : JimDoubleToInt(fvalue);
     }
 
     if (option == OPT_BE || option == OPT_FLOATBE) {

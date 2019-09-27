@@ -1,2 +1,3 @@
 /* Public autoconf settings */
 @DEFINE_HAVE_LONG_LONG@
+@DEFINE_HAVE_SOFTFLOAT@

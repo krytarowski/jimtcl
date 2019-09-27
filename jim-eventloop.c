@@ -630,7 +630,7 @@ static void JimAfterTimeEventFinalizer(Jim_Interp *interp, void *clientData)
 static int JimELAfterCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
 {
     Jim_EventLoop *eventLoop = Jim_CmdPrivData(interp);
-    double ms = 0;
+    jim_double ms = JIM_DOUBLE_ZERO;
     jim_wide id;
     Jim_Obj *objPtr, *idObjPtr;
     static const char * const options[] = {
@@ -652,7 +652,7 @@ static int JimELAfterCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
     }
     else if (argc == 2) {
         /* Simply a sleep */
-        usleep(ms * 1000);
+        usleep(jim_double_to_wide(jim_double_mul(ms, JIM_DOUBLE_THOUSAND)));
         return JIM_OK;
     }
 
@@ -666,7 +666,7 @@ static int JimELAfterCommand(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         case AFTER_CREATE: {
             Jim_Obj *scriptObj = Jim_ConcatObj(interp, argc - 2, argv + 2);
             Jim_IncrRefCount(scriptObj);
-            id = Jim_CreateTimeHandler(interp, (jim_wide)(ms * 1000), JimAfterTimeHandler, scriptObj,
+            id = Jim_CreateTimeHandler(interp, jim_double_to_wide(jim_double_mul(ms, JIM_DOUBLE_THOUSAND)), JimAfterTimeHandler, scriptObj,
                 JimAfterTimeEventFinalizer);
             objPtr = Jim_NewStringObj(interp, NULL, 0);
             Jim_AppendString(interp, objPtr, "after#", -1);

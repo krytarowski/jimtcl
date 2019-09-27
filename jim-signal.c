@@ -7,12 +7,18 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "jim.h"
+
 #include "jimautoconf.h"
 #ifdef HAVE_UNISTD_H
     #include <unistd.h>
 #endif
 #include <jim-subcmd.h>
 #include <jim-signal.h>
+
+#include "jim-floats.h"
+
+#define jim_fraqt(a) jim_double_sub(a,jim_wide_to_double(jim_double_to_wide(a)))
 
 #define MAX_SIGNALS_WIDE (sizeof(jim_wide) * 8)
 #if defined(NSIG)
@@ -437,15 +443,15 @@ static int Jim_AlarmCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
     }
     else {
 #ifdef HAVE_UALARM
-        double t;
+        jim_double t;
 
         ret = Jim_GetDouble(interp, argv[1], &t);
         if (ret == JIM_OK) {
-            if (t < 1) {
-                ualarm(t * 1e6, 0);
+            if (jim_double_lt(t, JIM_DOUBLE_ONE)) {
+                ualarm(jim_double_to_wide(jim_double_mul(t, JIM_DOUBLE_MILLION)), 0);
             }
             else {
-                alarm(t);
+                alarm(jim_double_to_wide(t));
             }
         }
 #else
@@ -453,7 +459,7 @@ static int Jim_AlarmCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
 
         ret = Jim_GetLong(interp, argv[1], &t);
         if (ret == JIM_OK) {
-            alarm(t);
+            alarm(jim_double_to_wide(t));
         }
 #endif
     }
@@ -470,14 +476,14 @@ static int Jim_SleepCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         return JIM_ERR;
     }
     else {
-        double t;
+        jim_double t;
 
         ret = Jim_GetDouble(interp, argv[1], &t);
         if (ret == JIM_OK) {
 #ifdef HAVE_USLEEP
-            usleep((int)((t - (int)t) * 1e6));
+            usleep(jim_double_to_wide(jim_double_mul(jim_fraqt(t), JIM_DOUBLE_MILLION)));
 #endif
-            sleep(t);
+            sleep(jim_double_to_wide(t));
         }
     }
 

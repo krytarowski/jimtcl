@@ -86,6 +86,22 @@ extern "C" {
 #endif
 
 /* -----------------------------------------------------------------------------
+ * Compile Time Assert (static_assert())
+ * ---------------------------------------------------------------------------*/
+
+#ifdef __COUNTER__
+#define JIM_CTASSERT(x)         JIM_CTASSERT0(x, __jimctassert, __COUNTER__)
+#else
+#define JIM_CTASSERT(x)         JIM_CTASSERT99(x, __INCLUDE_LEVEL__, __LINE__)
+#define JIM_CTASSERT99(x, a, b) JIM_CTASSERT0(x, __jimctassert ## a, _ ## b)
+#endif
+#define JIM_CTASSERT0(x, y, z)  JIM_CTASSERT1(x, y, z)
+#define JIM_CTASSERT1(x, y, z)  \
+    typedef struct { \
+        unsigned int y ## z : /*CONSTCOND*/(x) ? 1 : -1; \
+    } y ## z ## _jimstruct
+
+/* -----------------------------------------------------------------------------
  * Compiler specific fixes.
  * ---------------------------------------------------------------------------*/
 
@@ -106,6 +122,12 @@ extern "C" {
 #    define JIM_WIDE_MIN LONG_MIN
 #    define JIM_WIDE_MAX LONG_MAX
 #  endif
+
+/* -----------------------------------------------------------------------------
+ * Native Floats / SoftFloat IEEE emulation.
+ * ---------------------------------------------------------------------------*/
+
+#include <jim-floats.h>
 
 /* -----------------------------------------------------------------------------
  * LIBC specific fixes
@@ -285,7 +307,7 @@ typedef struct Jim_Obj {
         /* generic integer value (e.g. index, return code) */
         int intValue;
         /* double number type */
-        double doubleValue;
+        jim_double doubleValue;
         /* Generic pointer */
         void *ptr;
         /* Generic two pointers value */
@@ -835,10 +857,10 @@ JIM_EXPORT Jim_Obj * Jim_NewIntObj (Jim_Interp *interp,
 
 /* double object */
 JIM_EXPORT int Jim_GetDouble(Jim_Interp *interp, Jim_Obj *objPtr,
-        double *doublePtr);
+        jim_double *doublePtr);
 JIM_EXPORT void Jim_SetDouble(Jim_Interp *interp, Jim_Obj *objPtr,
-        double doubleValue);
-JIM_EXPORT Jim_Obj * Jim_NewDoubleObj(Jim_Interp *interp, double doubleValue);
+        jim_double doubleValue);
+JIM_EXPORT Jim_Obj * Jim_NewDoubleObj(Jim_Interp *interp, jim_double doubleValue);
 
 /* commands utilities */
 JIM_EXPORT void Jim_WrongNumArgs (Jim_Interp *interp, int argc,
