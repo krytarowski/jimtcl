@@ -18,7 +18,7 @@
 
 #include "jim-floats.h"
 
-#define jim_fraqt(a) jim_sub(a,jim_wide_to_double(jim_double_to_wide(a)))
+#define jim_fraqt(a) jim_double_sub(a,jim_wide_to_double(jim_double_to_wide(a)))
 
 #define MAX_SIGNALS_WIDE (sizeof(jim_wide) * 8)
 #if defined(NSIG)
@@ -447,8 +447,8 @@ static int Jim_AlarmCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
 
         ret = Jim_GetDouble(interp, argv[1], &t);
         if (ret == JIM_OK) {
-            if (jim_lt(t, jim_one)) {
-                ualarm(jim_double_to_wide(jim_mul(t,jim_million)), 0);
+            if (jim_double_lt(t, JIM_DOUBLE_ONE)) {
+                ualarm(jim_double_to_wide(jim_double_mul(t, JIM_DOUBLE_MILLION)), 0);
             }
             else {
                 alarm(jim_double_to_wide(t));
@@ -481,7 +481,7 @@ static int Jim_SleepCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv)
         ret = Jim_GetDouble(interp, argv[1], &t);
         if (ret == JIM_OK) {
 #ifdef HAVE_USLEEP
-            usleep(jim_double_to_wide(jim_mul(jim_fraqt(t), jim_million)));
+            usleep(jim_double_to_wide(jim_double_mul(jim_fraqt(t), JIM_DOUBLE_MILLION)));
 #endif
             sleep(jim_double_to_wide(t));
         }

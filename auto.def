@@ -308,6 +308,8 @@ if {[opt-bool softfloat]} {
     define HAVE_SOFTFLOAT
     define-append CPPFLAGS -Isoftfloat/
     lappend extra_objs softfloat/jim-ui32_to_f32.o
+} else {
+    lappend extra_objs jim-floats.c
 }
 if {[opt-bool shared with-jim-shared]} {
     msg-result "Building shared library"
