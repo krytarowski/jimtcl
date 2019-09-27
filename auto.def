@@ -89,8 +89,12 @@ if {"-Werror" in [get-define CFLAGS] && [cctest -cflags -Wno-error]} {
 
 cc-check-types "long long"
 
+define CPPFLAGS ""
 define CCOPTS ""
 define CXXOPTS ""
+if {[opt-bool softfloat]} {
+    define-append CPPFLAGS -Isoftfloat/
+}
 if {[cctest -cflags -fno-unwind-tables]} {
     define-append CCOPTS -fno-unwind-tables
 }

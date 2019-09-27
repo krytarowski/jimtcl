@@ -99,7 +99,7 @@ extern "C" {
 #define JIM_CTASSERT1(x, y, z)  \
     typedef struct { \
         unsigned int y ## z : /*CONSTCOND*/(x) ? 1 : -1; \
-    } y ## z ## _struct
+    } y ## z ## _jimstruct
 
 /* -----------------------------------------------------------------------------
  * SoftFloat IEEE emulation.
