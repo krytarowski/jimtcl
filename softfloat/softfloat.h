@@ -37,15 +37,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef softfloat_h
 #define softfloat_h 1
 
-#include <stdint.h>
-
-typedef struct { uint32_t v; } jim_float;
-typedef struct { uint64_t v; } jim_double;
+#include <jim.h>
 
 /*----------------------------------------------------------------------------
 | Software floating-point underflow tininess-detection mode.
 *----------------------------------------------------------------------------*/
-extern  uint_fast8_t softfloat_detectTininess;
+
+typedef unsigned char jim_uint8_t;
+typedef unsigned int jim_uint32_t;
+typedef unsigned long long jim_uint64_t;
+
+typedef struct { jim_uint32_t v; } jim_float;
+typedef struct { jim_uint64_t v; } jim_double;
+
+JIM_CTASSERT(sizeof(jim_uint8_t) == 1);
+JIM_CTASSERT(sizeof(jim_uint32_t) == 4);
+JIM_CTASSERT(sizeof(jim_uint64_t) == 8);
+
+/*----------------------------------------------------------------------------
+| Software floating-point underflow tininess-detection mode.
+*----------------------------------------------------------------------------*/
+extern jim_uint8_t softfloat_detectTininess;
 enum {
     softfloat_tininess_beforeRounding = 0,
     softfloat_tininess_afterRounding  = 1
@@ -55,7 +67,7 @@ enum {
 | Software floating-point rounding mode.  (Mode "odd" is supported only if
 | SoftFloat is compiled with macro 'SOFTFLOAT_ROUND_ODD' defined.)
 *----------------------------------------------------------------------------*/
-extern  uint_fast8_t softfloat_roundingMode;
+extern jim_uint8_t softfloat_roundingMode;
 enum {
     softfloat_round_near_even   = 0,
     softfloat_round_minMag      = 1,

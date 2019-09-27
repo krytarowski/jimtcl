@@ -86,6 +86,22 @@ extern "C" {
 #endif
 
 /* -----------------------------------------------------------------------------
+ * Compile Time Assert (static_assert())
+ * ---------------------------------------------------------------------------*/
+
+#ifdef __COUNTER__
+#define JIM_CTASSERT(x)         JIM_CTASSERT0(x, __jimctassert, __COUNTER__)
+#else
+#define JIM_CTASSERT(x)         JIM_CTASSERT99(x, __INCLUDE_LEVEL__, __LINE__)
+#define JIM_CTASSERT99(x, a, b) JIM_CTASSERT0(x, __jimctassert ## a, _ ## b)
+#endif
+#define JIM_CTASSERT0(x, y, z)  JIM_CTASSERT1(x, y, z)
+#define JIM_CTASSERT1(x, y, z)  \
+    typedef struct { \
+        unsigned int y ## z : /*CONSTCOND*/(x) ? 1 : -1; \
+    } y ## z ## _struct
+
+/* -----------------------------------------------------------------------------
  * SoftFloat IEEE emulation.
  * ---------------------------------------------------------------------------*/
 
@@ -93,9 +109,7 @@ extern "C" {
 typedef float jim_float;
 typedef double jim_double;
 #else
-/* The emulation fallback depends on inttypes.h */
-typedef struct { uint32_t v; } jim_float;
-typedef struct { uint64_t v; } jim_double;
+#include <jim-softfloat.h>
 #endif
 
 /* -----------------------------------------------------------------------------
