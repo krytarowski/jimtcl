@@ -155,8 +155,8 @@ jim_float16_t
 struct jim_exp16_sig32 { jim_int_fast16_t exp; jim_uint_fast32_t sig; };
 struct jim_exp16_sig32 jim_softfloat_normSubnormalF32Sig( jim_uint_fast32_t );
 
-jim_float32_t jim_softfloat_roundPackToF32( jim_bool, int_fast16_t, jim_uint_fast32_t );
-jim_float32_t jim_softfloat_normRoundPackToF32( jim_bool, int_fast16_t, jim_uint_fast32_t );
+jim_float32_t jim_softfloat_roundPackToF32( jim_bool, jim_int_fast16_t, jim_uint_fast32_t );
+jim_float32_t jim_softfloat_normRoundPackToF32( jim_bool, jim_int_fast16_t, jim_uint_fast32_t );
 
 jim_float32_t jim_softfloat_addMagsF32( jim_uint_fast32_t, jim_uint_fast32_t );
 jim_float32_t jim_softfloat_subMagsF32( jim_uint_fast32_t, jim_uint_fast32_t );
