@@ -41,9 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-softfloat-internals.h"
 #include "jim-softfloat-types.h"
 
-#if 0
-
-#ifndef softfloat_shortShiftRightJam64
+#ifndef jim_softfloat_shortShiftRightJam64
 /*----------------------------------------------------------------------------
 | Shifts 'a' right by the number of bits given in 'dist', which must be in
 | the range 1 to 63.  If any nonzero bits are shifted off, they are "jammed"
@@ -51,14 +49,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 | significant bit to 1.  This shifted-and-jammed value is returned.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
-jim_uint64_t softfloat_shortShiftRightJam64( jim_uint64_t a, jim_uint8_t dist )
+jim_uint64_t jim_softfloat_shortShiftRightJam64( jim_uint64_t a, jim_uint8_t dist )
     { return a>>dist | ((a & (((jim_uint64_t) 1<<dist) - 1)) != 0); }
 #else
-uint64_t softfloat_shortShiftRightJam64( uint64_t a, uint_fast8_t dist );
+jim_uint64_t jim_softfloat_shortShiftRightJam64( jim_uint64_t a, jim_uint_fast8_t dist );
 #endif
 #endif
 
-#ifndef softfloat_shiftRightJam32
+#ifndef jim_softfloat_shiftRightJam32
 /*----------------------------------------------------------------------------
 | Shifts 'a' right by the number of bits given in 'dist', which must not
 | be zero.  If any nonzero bits are shifted off, they are "jammed" into the
@@ -69,17 +67,17 @@ uint64_t softfloat_shortShiftRightJam64( uint64_t a, uint_fast8_t dist );
 | is zero or nonzero.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
-INLINE uint32_t softfloat_shiftRightJam32( uint32_t a, uint_fast16_t dist )
+INLINE jim_uint32_t jim_softfloat_shiftRightJam32( jim_uint32_t a, jim_uint_fast16_t dist )
 {
     return
-        (dist < 31) ? a>>dist | ((uint32_t) (a<<(-dist & 31)) != 0) : (a != 0);
+        (dist < 31) ? a>>dist | ((jim_uint32_t) (a<<(-dist & 31)) != 0) : (a != 0);
 }
 #else
-uint32_t softfloat_shiftRightJam32( uint32_t a, uint_fast16_t dist );
+jim_uint32_t jim_softfloat_shiftRightJam32( jim_uint32_t a, jim_uint_fast16_t dist );
 #endif
 #endif
 
-#ifndef softfloat_shiftRightJam64
+#ifndef jim_softfloat_shiftRightJam64
 /*----------------------------------------------------------------------------
 | Shifts 'a' right by the number of bits given in 'dist', which must not
 | be zero.  If any nonzero bits are shifted off, they are "jammed" into the
@@ -90,13 +88,13 @@ uint32_t softfloat_shiftRightJam32( uint32_t a, uint_fast16_t dist );
 | is zero or nonzero.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (3 <= INLINE_LEVEL)
-INLINE uint64_t softfloat_shiftRightJam64( uint64_t a, uint_fast32_t dist )
+INLINE jim_uint64_t jim_softfloat_shiftRightJam64( jim_uint64_t a, jim_uint_fast32_t dist )
 {
     return
-        (dist < 63) ? a>>dist | ((uint64_t) (a<<(-dist & 63)) != 0) : (a != 0);
+        (dist < 63) ? a>>dist | ((jim_uint64_t) (a<<(-dist & 63)) != 0) : (a != 0);
 }
 #else
-uint64_t softfloat_shiftRightJam64( uint64_t a, uint_fast32_t dist );
+jim_uint64_t jim_softfloat_shiftRightJam64( jim_uint64_t a, jim_uint_fast32_t dist );
 #endif
 #endif
 
@@ -105,38 +103,38 @@ uint64_t softfloat_shiftRightJam64( uint64_t a, uint_fast32_t dist );
 | into the number of leading 0 bits before the most-significant 1 of that
 | integer.  For integer zero (index 0), the corresponding table element is 8.
 *----------------------------------------------------------------------------*/
-extern const uint_least8_t softfloat_countLeadingZeros8[256];
+extern const jim_uint_least8_t jim_softfloat_countLeadingZeros8[256];
 
-#ifndef softfloat_countLeadingZeros16
+#ifndef jim_softfloat_countLeadingZeros16
 /*----------------------------------------------------------------------------
 | Returns the number of leading 0 bits before the most-significant 1 bit of
 | 'a'.  If 'a' is zero, 16 is returned.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
-INLINE uint_fast8_t softfloat_countLeadingZeros16( uint16_t a )
+INLINE jim_uint_fast8_t jim_softfloat_countLeadingZeros16( jim_uint16_t a )
 {
-    uint_fast8_t count = 8;
+    jim_uint_fast8_t count = 8;
     if ( 0x100 <= a ) {
         count = 0;
         a >>= 8;
     }
-    count += softfloat_countLeadingZeros8[a];
+    count += jim_softfloat_countLeadingZeros8[a];
     return count;
 }
 #else
-uint_fast8_t softfloat_countLeadingZeros16( uint16_t a );
+jim_uint_fast8_t jim_softfloat_countLeadingZeros16( jim_uint16_t a );
 #endif
 #endif
 
-#ifndef softfloat_countLeadingZeros32
+#ifndef jim_softfloat_countLeadingZeros32
 /*----------------------------------------------------------------------------
 | Returns the number of leading 0 bits before the most-significant 1 bit of
 | 'a'.  If 'a' is zero, 32 is returned.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (3 <= INLINE_LEVEL)
-INLINE uint_fast8_t softfloat_countLeadingZeros32( uint32_t a )
+INLINE jim_uint_fast8_t jim_softfloat_countLeadingZeros32( jim_uint32_t a )
 {
-    uint_fast8_t count = 0;
+    jim_uint_fast8_t count = 0;
     if ( a < 0x10000 ) {
         count = 16;
         a <<= 16;
@@ -145,11 +143,11 @@ INLINE uint_fast8_t softfloat_countLeadingZeros32( uint32_t a )
         count += 8;
         a <<= 8;
     }
-    count += softfloat_countLeadingZeros8[a>>24];
+    count += jim_softfloat_countLeadingZeros8[a>>24];
     return count;
 }
 #else
-uint_fast8_t softfloat_countLeadingZeros32( uint32_t a );
+jim_uint_fast8_t jim_softfloat_countLeadingZeros32( jim_uint32_t a );
 #endif
 #endif
 
@@ -163,12 +161,10 @@ uint_fast8_t softfloat_countLeadingZeros32( uint32_t a );
 jim_uint_fast8_t jim_softfloat_countLeadingZeros64( jim_uint64_t a );
 #endif
 
-#if 0
+extern const jim_uint16_t jim_softfloat_approxRecip_1k0s[16];
+extern const jim_uint16_t jim_softfloat_approxRecip_1k1s[16];
 
-extern const uint16_t softfloat_approxRecip_1k0s[16];
-extern const uint16_t softfloat_approxRecip_1k1s[16];
-
-#ifndef softfloat_approxRecip32_1
+#ifndef jim_softfloat_approxRecip32_1
 /*----------------------------------------------------------------------------
 | Returns an approximation to the reciprocal of the number represented by 'a',
 | where 'a' is interpreted as an unsigned fixed-point number with one integer
@@ -181,16 +177,16 @@ extern const uint16_t softfloat_approxRecip_1k1s[16];
 | (units in the last place).
 *----------------------------------------------------------------------------*/
 #ifdef SOFTFLOAT_FAST_DIV64TO32
-#define softfloat_approxRecip32_1( a ) ((uint32_t) (UINT64_C( 0x7FFFFFFFFFFFFFFF ) / (uint32_t) (a)))
+#define jim_softfloat_approxRecip32_1( a ) ((jim_uint32_t) (JIM_UINT64_C( 0x7FFFFFFFFFFFFFFF ) / (jim_uint32_t) (a)))
 #else
-uint32_t softfloat_approxRecip32_1( uint32_t a );
+jim_uint32_t jim_softfloat_approxRecip32_1( jim_uint32_t a );
 #endif
 #endif
 
-extern const uint16_t softfloat_approxRecipSqrt_1k0s[16];
-extern const uint16_t softfloat_approxRecipSqrt_1k1s[16];
+extern const jim_uint16_t jim_softfloat_approxRecipSqrt_1k0s[16];
+extern const jim_uint16_t jim_softfloat_approxRecipSqrt_1k1s[16];
 
-#ifndef softfloat_approxRecipSqrt32_1
+#ifndef jim_softfloat_approxRecipSqrt32_1
 /*----------------------------------------------------------------------------
 | Returns an approximation to the reciprocal of the square root of the number
 | represented by 'a', where 'a' is interpreted as an unsigned fixed-point
@@ -209,7 +205,7 @@ extern const uint16_t softfloat_approxRecipSqrt_1k1s[16];
 | returned is also always within the range 0.5 to 1; thus, the most-
 | significant bit of the result is always set.
 *----------------------------------------------------------------------------*/
-uint32_t softfloat_approxRecipSqrt32_1( unsigned int oddExpA, uint32_t a );
+jim_uint32_t jim_softfloat_approxRecipSqrt32_1( unsigned int oddExpA, jim_uint32_t a );
 #endif
 
 #ifdef SOFTFLOAT_FAST_INT64
@@ -219,7 +215,7 @@ uint32_t softfloat_approxRecipSqrt32_1( unsigned int oddExpA, uint32_t a );
 | defined.
 *----------------------------------------------------------------------------*/
 
-#ifndef softfloat_eq128
+#ifndef jim_softfloat_eq128
 /*----------------------------------------------------------------------------
 | Returns true if the 128-bit unsigned integer formed by concatenating 'a64'
 | and 'a0' is equal to the 128-bit unsigned integer formed by concatenating
@@ -227,14 +223,14 @@ uint32_t softfloat_approxRecipSqrt32_1( unsigned int oddExpA, uint32_t a );
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (1 <= INLINE_LEVEL)
 INLINE
-bool softfloat_eq128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 )
+jim_bool jim_softfloat_eq128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 )
     { return (a64 == b64) && (a0 == b0); }
 #else
-bool softfloat_eq128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
+jim_bool jim_softfloat_eq128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 );
 #endif
 #endif
 
-#ifndef softfloat_le128
+#ifndef jim_softfloat_le128
 /*----------------------------------------------------------------------------
 | Returns true if the 128-bit unsigned integer formed by concatenating 'a64'
 | and 'a0' is less than or equal to the 128-bit unsigned integer formed by
@@ -242,10 +238,10 @@ bool softfloat_eq128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
-bool softfloat_le128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 )
+bool jim_softfloat_le128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 )
     { return (a64 < b64) || ((a64 == b64) && (a0 <= b0)); }
 #else
-bool softfloat_le128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
+bool softfloat_le128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 );
 #endif
 #endif
 
@@ -257,10 +253,10 @@ bool softfloat_le128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
-bool softfloat_lt128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 )
+bool softfloat_lt128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 )
     { return (a64 < b64) || ((a64 == b64) && (a0 < b0)); }
 #else
-bool softfloat_lt128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
+bool softfloat_lt128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 );
 #endif
 #endif
 
@@ -272,7 +268,7 @@ bool softfloat_lt128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
 struct uint128
- softfloat_shortShiftLeft128( uint64_t a64, uint64_t a0, uint_fast8_t dist )
+ softfloat_shortShiftLeft128( jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast8_t dist )
 {
     struct uint128 z;
     z.v64 = a64<<dist | a0>>(-dist & 63);
@@ -281,7 +277,7 @@ struct uint128
 }
 #else
 struct uint128
- softfloat_shortShiftLeft128( uint64_t a64, uint64_t a0, uint_fast8_t dist );
+ softfloat_shortShiftLeft128( jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast8_t dist );
 #endif
 #endif
 
@@ -293,7 +289,7 @@ struct uint128
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
 struct uint128
- softfloat_shortShiftRight128( uint64_t a64, uint64_t a0, uint_fast8_t dist )
+ softfloat_shortShiftRight128( jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast8_t dist )
 {
     struct uint128 z;
     z.v64 = a64>>dist;
@@ -302,7 +298,7 @@ struct uint128
 }
 #else
 struct uint128
- softfloat_shortShiftRight128( uint64_t a64, uint64_t a0, uint_fast8_t dist );
+ softfloat_shortShiftRight128( jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast8_t dist );
 #endif
 #endif
 
@@ -345,20 +341,20 @@ struct jim_uint64_extra
 INLINE
 struct uint128
  softfloat_shortShiftRightJam128(
-     uint64_t a64, uint64_t a0, uint_fast8_t dist )
+     jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast8_t dist )
 {
-    uint_fast8_t negDist = -dist;
+    jim_uint_fast8_t negDist = -dist;
     struct uint128 z;
     z.v64 = a64>>dist;
     z.v0 =
         a64<<(negDist & 63) | a0>>dist
-            | ((uint64_t) (a0<<(negDist & 63)) != 0);
+            | ((jim_uint64_t) (a0<<(negDist & 63)) != 0);
     return z;
 }
 #else
 struct uint128
  softfloat_shortShiftRightJam128(
-     uint64_t a64, uint64_t a0, uint_fast8_t dist );
+     jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast8_t dist );
 #endif
 #endif
 
@@ -371,9 +367,9 @@ struct uint128
 INLINE
 struct uint128_extra
  softfloat_shortShiftRightJam128Extra(
-     uint64_t a64, uint64_t a0, uint64_t extra, uint_fast8_t dist )
+     jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t extra, jim_uint_fast8_t dist )
 {
-    uint_fast8_t negDist = -dist;
+    jim_uint_fast8_t negDist = -dist;
     struct uint128_extra z;
     z.v.v64 = a64>>dist;
     z.v.v0 = a64<<(negDist & 63) | a0>>dist;
@@ -383,7 +379,7 @@ struct uint128_extra
 #else
 struct uint128_extra
  softfloat_shortShiftRightJam128Extra(
-     uint64_t a64, uint64_t a0, uint64_t extra, uint_fast8_t dist );
+     jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t extra, jim_uint_fast8_t dist );
 #endif
 #endif
 
@@ -408,7 +404,7 @@ struct uint128_extra
 INLINE
 struct uint64_extra
  softfloat_shiftRightJam64Extra(
-     uint64_t a, uint64_t extra, uint_fast32_t dist )
+     jim_uint64_t a, jim_uint64_t extra, jim_uint_fast32_t dist )
 {
     struct uint64_extra z;
     if ( dist < 64 ) {
@@ -424,7 +420,7 @@ struct uint64_extra
 #else
 struct uint64_extra
  softfloat_shiftRightJam64Extra(
-     uint64_t a, uint64_t extra, uint_fast32_t dist );
+     jim_uint64_t a, jim_uint64_t extra, jim_uint_fast32_t dist );
 #endif
 #endif
 
@@ -440,7 +436,7 @@ struct uint64_extra
 | original 128 bits are all zeros.
 *----------------------------------------------------------------------------*/
 struct uint128
- softfloat_shiftRightJam128( uint64_t a64, uint64_t a0, uint_fast32_t dist );
+ softfloat_shiftRightJam128( jim_uint64_t a64, jim_uint64_t a0, jim_uint_fast32_t dist );
 #endif
 
 #ifndef softfloat_shiftRightJam128Extra
@@ -463,7 +459,7 @@ struct uint128
 *----------------------------------------------------------------------------*/
 struct uint128_extra
  softfloat_shiftRightJam128Extra(
-     uint64_t a64, uint64_t a0, uint64_t extra, uint_fast32_t dist );
+     jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t extra, jim_uint_fast32_t dist );
 #endif
 
 #ifndef softfloat_shiftRightJam256M
@@ -481,7 +477,7 @@ struct uint128_extra
 *----------------------------------------------------------------------------*/
 void
  softfloat_shiftRightJam256M(
-     const uint64_t *aPtr, uint_fast32_t dist, uint64_t *zPtr );
+     const jim_uint64_t *aPtr, jim_uint_fast32_t dist, jim_uint64_t *zPtr );
 #endif
 
 #ifndef softfloat_add128
@@ -493,7 +489,7 @@ void
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
 struct uint128
- softfloat_add128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 )
+ softfloat_add128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 )
 {
     struct uint128 z;
     z.v0 = a0 + b0;
@@ -502,7 +498,7 @@ struct uint128
 }
 #else
 struct uint128
- softfloat_add128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
+ softfloat_add128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 );
 #endif
 #endif
 
@@ -516,7 +512,7 @@ struct uint128
 *----------------------------------------------------------------------------*/
 void
  softfloat_add256M(
-     const uint64_t *aPtr, const uint64_t *bPtr, uint64_t *zPtr );
+     const jim_uint64_t *aPtr, const jim_uint64_t *bPtr, jim_uint64_t *zPtr );
 #endif
 
 #ifndef softfloat_sub128
@@ -528,7 +524,7 @@ void
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
 struct uint128
- softfloat_sub128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 )
+ softfloat_sub128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 )
 {
     struct uint128 z;
     z.v0 = a0 - b0;
@@ -538,7 +534,7 @@ struct uint128
 }
 #else
 struct uint128
- softfloat_sub128( uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0 );
+ softfloat_sub128( jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0 );
 #endif
 #endif
 
@@ -553,7 +549,7 @@ struct uint128
 *----------------------------------------------------------------------------*/
 void
  softfloat_sub256M(
-     const uint64_t *aPtr, const uint64_t *bPtr, uint64_t *zPtr );
+     const jim_uint64_t *aPtr, const jim_uint64_t *bPtr, jim_uint64_t *zPtr );
 #endif
 
 #ifndef softfloat_mul64ByShifted32To128
@@ -561,28 +557,28 @@ void
 | Returns the 128-bit product of 'a', 'b', and 2^32.
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (3 <= INLINE_LEVEL)
-INLINE struct uint128 softfloat_mul64ByShifted32To128( uint64_t a, uint32_t b )
+INLINE struct uint128 softfloat_mul64ByShifted32To128( jim_uint64_t a, jim_uint32_t b )
 {
     jim_uint64_t mid;
     struct uint128 z;
-    mid = (jim_uint64_t) (uint32_t) a * b;
+    mid = (jim_uint64_t) (jim_uint32_t) a * b;
     z.v0 = mid<<32;
-    z.v64 = (jim_uint64_t) (uint32_t) (a>>32) * b + (mid>>32);
+    z.v64 = (jim_uint64_t) (jim_uint32_t) (a>>32) * b + (mid>>32);
     return z;
 }
 #else
-struct uint128 softfloat_mul64ByShifted32To128( uint64_t a, uint32_t b );
+struct jim_uint128 jim_softfloat_mul64ByShifted32To128( jim_uint64_t a, jim_uint32_t b );
 #endif
 #endif
 
-#ifndef softfloat_mul64To128
+#ifndef jim_softfloat_mul64To128
 /*----------------------------------------------------------------------------
 | Returns the 128-bit product of 'a' and 'b'.
 *----------------------------------------------------------------------------*/
-struct uint128 softfloat_mul64To128( uint64_t a, uint64_t b );
+struct jim_uint128 jim_softfloat_mul64To128( jim_uint64_t a, jim_uint64_t b );
 #endif
 
-#ifndef softfloat_mul128By32
+#ifndef jim_softfloat_mul128By32
 /*----------------------------------------------------------------------------
 | Returns the product of the 128-bit integer formed by concatenating 'a64' and
 | 'a0', multiplied by 'b'.  The multiplication is modulo 2^128; any overflow
@@ -590,19 +586,19 @@ struct uint128 softfloat_mul64To128( uint64_t a, uint64_t b );
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (4 <= INLINE_LEVEL)
 INLINE
-struct uint128 softfloat_mul128By32( jim_uint64_t a64, jim_uint64_t a0, jim_uint32_t b )
+struct jim_uint128 jim_softfloat_mul128By32( jim_uint64_t a64, jim_uint64_t a0, jim_uint32_t b )
 {
-    struct uint128 z;
+    struct jim_uint128 z;
     jim_uint64_t mid;
-    uint_fast32_t carry;
+    jim_uint_fast32_t carry;
     z.v0 = a0 * b;
     mid = (jim_uint64_t) (jim_uint32_t) (a0>>32) * b;
-    carry = (uint32_t) ((jim_uint32_t) (z.v0>>32) - (jim_uint32_t) mid);
+    carry = (jim_uint32_t) ((jim_uint32_t) (z.v0>>32) - (jim_uint32_t) mid);
     z.v64 = a64 * b + (jim_uint32_t) ((mid + carry)>>32);
     return z;
 }
 #else
-struct uint128 softfloat_mul128By32( uint64_t a64, uint64_t a0, uint32_t b );
+struct uint128 softfloat_mul128By32( jim_uint64_t a64, jim_uint64_t a0, jim_uint32_t b );
 #endif
 #endif
 
@@ -616,7 +612,7 @@ struct uint128 softfloat_mul128By32( uint64_t a64, uint64_t a0, uint32_t b );
 *----------------------------------------------------------------------------*/
 void
  softfloat_mul128To256M(
-     uint64_t a64, uint64_t a0, uint64_t b64, uint64_t b0, uint64_t *zPtr );
+     jim_uint64_t a64, jim_uint64_t a0, jim_uint64_t b64, jim_uint64_t b0, jim_uint64_t *zPtr );
 #endif
 
 #else
@@ -635,7 +631,7 @@ void
 | Each of 'aPtr' and 'bPtr' points to an array of three 32-bit elements that
 | concatenate in the platform's normal endian order to form a 96-bit integer.
 *----------------------------------------------------------------------------*/
-int_fast8_t softfloat_compare96M( const uint32_t *aPtr, const uint32_t *bPtr );
+int_fast8_t softfloat_compare96M( const jim_uint32_t *aPtr, const jim_uint32_t *bPtr );
 #endif
 
 #ifndef softfloat_compare128M
@@ -648,7 +644,7 @@ int_fast8_t softfloat_compare96M( const uint32_t *aPtr, const uint32_t *bPtr );
 | concatenate in the platform's normal endian order to form a 128-bit integer.
 *----------------------------------------------------------------------------*/
 int_fast8_t
- softfloat_compare128M( const uint32_t *aPtr, const uint32_t *bPtr );
+ softfloat_compare128M( const jim_uint32_t *aPtr, const jim_uint32_t *bPtr );
 #endif
 
 #ifndef softfloat_shortShiftLeft64To96M
@@ -663,9 +659,9 @@ int_fast8_t
 INLINE
 void
  softfloat_shortShiftLeft64To96M(
-     uint64_t a, uint_fast8_t dist, uint32_t *zPtr )
+     jim_uint64_t a, jim_uint_fast8_t dist, jim_uint32_t *zPtr )
 {
-    zPtr[indexWord( 3, 0 )] = (uint32_t) a<<dist;
+    zPtr[indexWord( 3, 0 )] = (jim_uint32_t) a<<dist;
     a >>= 32 - dist;
     zPtr[indexWord( 3, 2 )] = a>>32;
     zPtr[indexWord( 3, 1 )] = a;
@@ -673,7 +669,7 @@ void
 #else
 void
  softfloat_shortShiftLeft64To96M(
-     uint64_t a, uint_fast8_t dist, uint32_t *zPtr );
+     jim_uint64_t a, jim_uint_fast8_t dist, jim_uint32_t *zPtr );
 #endif
 #endif
 
@@ -689,10 +685,10 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_shortShiftLeftM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     uint_fast8_t dist,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     jim_uint_fast8_t dist,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -733,10 +729,10 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_shiftLeftM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     uint32_t dist,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     jim_uint32_t dist,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -776,10 +772,10 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_shortShiftRightM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     uint_fast8_t dist,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     jim_uint_fast8_t dist,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -812,7 +808,7 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_shortShiftRightJamM(
-     uint_fast8_t, const uint32_t *, uint_fast8_t, uint32_t * );
+     jim_uint_fast8_t, const jim_uint32_t *, jim_uint_fast8_t, jim_uint32_t * );
 #endif
 
 #ifndef softfloat_shortShiftRightJam160M
@@ -836,10 +832,10 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_shiftRightM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     uint32_t dist,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     jim_uint32_t dist,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -867,10 +863,10 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_shiftRightJamM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     uint32_t dist,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     jim_uint32_t dist,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -909,10 +905,10 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_addM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     const uint32_t *bPtr,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     const jim_uint32_t *bPtr,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -949,13 +945,13 @@ void
 | points to a 'size_words'-long array of 32-bit elements that concatenate in
 | the platform's normal endian order to form an N-bit integer.
 *----------------------------------------------------------------------------*/
-uint_fast8_t
+jim_uint_fast8_t
  softfloat_addCarryM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     const uint32_t *bPtr,
-     uint_fast8_t carry,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     const jim_uint32_t *bPtr,
+     jim_uint_fast8_t carry,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -965,13 +961,13 @@ uint_fast8_t
 | the value of the unsigned integer pointed to by 'bPtr' is bit-wise completed
 | before the addition.
 *----------------------------------------------------------------------------*/
-uint_fast8_t
+jim_uint_fast8_t
  softfloat_addComplCarryM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     const uint32_t *bPtr,
-     uint_fast8_t carry,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     const jim_uint32_t *bPtr,
+     jim_uint_fast8_t carry,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -990,7 +986,7 @@ uint_fast8_t
 | points to a 'size_words'-long array of 32-bit elements that concatenate in
 | the platform's normal endian order to form an N-bit integer.
 *----------------------------------------------------------------------------*/
-void softfloat_negXM( uint_fast8_t size_words, uint32_t *zPtr );
+void softfloat_negXM( jim_uint_fast8_t size_words, jim_uint32_t *zPtr );
 #endif
 
 #ifndef softfloat_negX96M
@@ -1033,7 +1029,7 @@ void softfloat_negXM( uint_fast8_t size_words, uint32_t *zPtr );
 | elements that concatenate in the platform's normal endian order to form an
 | N-bit integer.
 *----------------------------------------------------------------------------*/
-void softfloat_sub1XM( uint_fast8_t size_words, uint32_t *zPtr );
+void softfloat_sub1XM( jim_uint_fast8_t size_words, jim_uint32_t *zPtr );
 #endif
 
 #ifndef softfloat_sub1X96M
@@ -1063,10 +1059,10 @@ void softfloat_sub1XM( uint_fast8_t size_words, uint32_t *zPtr );
 *----------------------------------------------------------------------------*/
 void
  softfloat_subM(
-     uint_fast8_t size_words,
-     const uint32_t *aPtr,
-     const uint32_t *bPtr,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *aPtr,
+     const jim_uint32_t *bPtr,
+     jim_uint32_t *zPtr
  );
 #endif
 
@@ -1101,7 +1097,7 @@ void
 | elements that concatenate in the platform's normal endian order to form a
 | 128-bit integer.
 *----------------------------------------------------------------------------*/
-void softfloat_mul64To128M( uint64_t a, uint64_t b, uint32_t *zPtr );
+void softfloat_mul64To128M( jim_uint64_t a, jim_uint64_t b, jim_uint32_t *zPtr );
 #endif
 
 #ifndef softfloat_mul128MTo256M
@@ -1115,7 +1111,7 @@ void softfloat_mul64To128M( uint64_t a, uint64_t b, uint32_t *zPtr );
 *----------------------------------------------------------------------------*/
 void
  softfloat_mul128MTo256M(
-     const uint32_t *aPtr, const uint32_t *bPtr, uint32_t *zPtr );
+     const jim_uint32_t *aPtr, const jim_uint32_t *bPtr, jim_uint32_t *zPtr );
 #endif
 
 #ifndef softfloat_remStepMBy32
@@ -1130,12 +1126,12 @@ void
 *----------------------------------------------------------------------------*/
 void
  softfloat_remStepMBy32(
-     uint_fast8_t size_words,
-     const uint32_t *remPtr,
-     uint_fast8_t dist,
-     const uint32_t *bPtr,
-     uint32_t q,
-     uint32_t *zPtr
+     jim_uint_fast8_t size_words,
+     const jim_uint32_t *remPtr,
+     jim_uint_fast8_t dist,
+     const jim_uint32_t *bPtr,
+     jim_uint32_t q,
+     jim_uint32_t *zPtr
  );
 #endif
 
