@@ -306,6 +306,8 @@ struct uint128
 #endif
 #endif
 
+#endif
+
 #ifndef softfloat_shortShiftRightJam64Extra
 /*----------------------------------------------------------------------------
 | This function is the same as 'softfloat_shiftRightJam64Extra' (below),
@@ -313,21 +315,23 @@ struct uint128
 *----------------------------------------------------------------------------*/
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
 INLINE
-struct uint64_extra
- softfloat_shortShiftRightJam64Extra(
-     uint64_t a, uint64_t extra, uint_fast8_t dist )
+struct jim_uint64_extra
+ jim_softfloat_shortShiftRightJam64Extra(
+     jim_uint64_t a, jim_uint64_t extra, jim_uint_fast8_t dist )
 {
-    struct uint64_extra z;
+    struct jim_uint64_extra z;
     z.v = a>>dist;
     z.extra = a<<(-dist & 63) | (extra != 0);
     return z;
 }
 #else
-struct uint64_extra
- softfloat_shortShiftRightJam64Extra(
-     uint64_t a, uint64_t extra, uint_fast8_t dist );
+struct jim_uint64_extra
+ jim_softfloat_shortShiftRightJam64Extra(
+     jim_uint64_t a, jim_uint64_t extra, jim_uint_fast8_t dist );
 #endif
 #endif
+
+#if 0
 
 #ifndef softfloat_shortShiftRightJam128
 /*----------------------------------------------------------------------------
