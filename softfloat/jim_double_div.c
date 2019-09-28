@@ -152,7 +152,7 @@ jim_double jim_double_div( jim_double a, jim_double b )
     *------------------------------------------------------------------------*/
  invalid:
     jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
-    uiZ = defaultNaNF64UI;
+    uiZ = jim_defaultNaNF64UI;
     goto uiZ;
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
