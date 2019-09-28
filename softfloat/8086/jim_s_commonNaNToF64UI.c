@@ -34,20 +34,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdint.h>
-#include "platform.h"
-#include "specialize.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
+
+#include "jim-softfloat-specialize.h"
 
 /*----------------------------------------------------------------------------
 | Converts the common NaN pointed to by `aPtr' into a 64-bit floating-point
 | NaN, and returns the bit pattern of this value as an unsigned integer.
 *----------------------------------------------------------------------------*/
-uint_fast64_t softfloat_commonNaNToF64UI( const struct commonNaN *aPtr )
+jim_uint_fast64_t jim_softfloat_commonNaNToF64UI( const struct jim_commonNaN *aPtr )
 {
 
     return
-        (uint_fast64_t) aPtr->sign<<63 | UINT64_C( 0x7FF8000000000000 )
+        (jim_uint_fast64_t) aPtr->sign<<63 | JIM_UINT64_C( 0x7FF8000000000000 )
             | aPtr->v64>>12;
 
 }
-
