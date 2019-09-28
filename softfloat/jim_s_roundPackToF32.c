@@ -38,8 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-softfloat.h"
 #include "jim-softfloat-internals.h"
 
-jim_float
-jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
+jim_float32_t
+jim_softfloat_roundPackToF32( jim_bool sign, jim_int_fast16_t exp, jim_uint_fast32_t sig )
 {
     jim_uint8_t roundingMode;
     int roundNearEven;
@@ -68,20 +68,20 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
             /*----------------------------------------------------------------
             *----------------------------------------------------------------*/
             isTiny =
-                (softfloat_detectTininess == jim_softfloat_tininess_beforeRounding)
+                (jim_softfloat_detectTininess == jim_softfloat_tininess_beforeRounding)
                     || (exp < -1) || (sig + roundIncrement < 0x80000000);
             sig = jim_softfloat_shiftRightJam32( sig, -exp );
             exp = 0;
             roundBits = sig & 0x7F;
             if ( isTiny && roundBits ) {
-                jim_softfloat_raiseFlags( softfloat_flag_underflow );
+                jim_softfloat_raiseFlags( jim_softfloat_flag_underflow );
             }
         } else if ( (0xFD < exp) || (0x80000000 <= sig + roundIncrement) ) {
             /*----------------------------------------------------------------
             *----------------------------------------------------------------*/
             jim_softfloat_raiseFlags(
                 jim_softfloat_flag_overflow | jim_softfloat_flag_inexact );
-            uiZ = packToF32UI( sign, 0xFF, 0 ) - ! roundIncrement;
+            uiZ = jim_packToF32UI( sign, 0xFF, 0 ) - ! roundIncrement;
             goto uiZ;
         }
     }
@@ -89,7 +89,7 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
     *------------------------------------------------------------------------*/
     sig = (sig + roundIncrement)>>7;
     if ( roundBits ) {
-        softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
+        jim_softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
 #ifdef SOFTFLOAT_ROUND_ODD
         if ( roundingMode == jim_softfloat_round_odd ) {
             sig |= 1;
@@ -97,7 +97,7 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
         }
 #endif
     }
-    sig &= ~(uint_fast32_t) (! (roundBits ^ 0x40) & jim_roundNearEven);
+    sig &= ~(uint_fast32_t) (! (roundBits ^ 0x40) & roundNearEven);
     if ( ! sig ) exp = 0;
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
