@@ -93,7 +93,7 @@ jim_double
     *------------------------------------------------------------------------*/
     sig = (sig + roundIncrement)>>10;
     if ( roundBits ) {
-        softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
+        jim_softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
 #ifdef SOFTFLOAT_ROUND_ODD
         if ( roundingMode == jim_softfloat_round_odd ) {
             sig |= 1;
