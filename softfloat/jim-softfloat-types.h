@@ -79,7 +79,29 @@ typedef signed long long jim_int_fast64_t;
 
 typedef int jim_bool;
 
+typedef struct { unsigned char v; } jim_float16_t;
 typedef jim_float jim_float32_t;
 typedef jim_double jim_float64_t;
+
+JIM_CTASSERT(sizeof(jim_float16_t) == 2);
+JIM_CTASSERT(sizeof(jim_float32_t) == 4);
+JIM_CTASSERT(sizeof(jim_float64_t) == 8);
+
+/*----------------------------------------------------------------------------
+| Compat macros
+*----------------------------------------------------------------------------*/
+
+#define JIM_INT8_C(c)       c##__INT8_C_SUFFIX__
+#define JIM_INT16_C(c)      c##__INT16_C_SUFFIX__
+#define JIM_INT32_C(c)      c##__INT32_C_SUFFIX__
+#define JIM_INT64_C(c)      c##__INT64_C_SUFFIX__
+
+#define JIM_UINT8_C(c)      c##__UINT8_C_SUFFIX__
+#define JIM_UINT16_C(c)     c##__UINT16_C_SUFFIX__
+#define JIM_UINT32_C(c)     c##__UINT32_C_SUFFIX__
+#define JIM_UINT64_C(c)     c##__UINT64_C_SUFFIX__
+
+#define JIM_INTMAX_C(c)     c##__INTMAX_C_SUFFIX__
+#define JIM_UINTMAX_C(c)    c##__UINTMAX_C_SUFFIX__
 
 #endif
