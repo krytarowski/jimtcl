@@ -88,7 +88,7 @@ jim_int_fast64_t
 #ifdef SOFTFLOAT_ROUND_ODD
         if ( roundingMode == jim_softfloat_round_odd ) z |= 1;
 #endif
-        if ( exact ) softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
+        if ( exact ) jim_softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
     }
     return z;
     /*------------------------------------------------------------------------
