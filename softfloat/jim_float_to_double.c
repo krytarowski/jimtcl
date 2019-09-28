@@ -34,40 +34,39 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "specialize.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-float64_t f32_to_f64( float32_t a )
+#include "jim-softfloat-specialize.h"
+
+jim_double jim_float_to_double( jim_float a )
 {
-    union ui32_f32 uA;
-    uint_fast32_t uiA;
-    bool sign;
-    int_fast16_t exp;
-    uint_fast32_t frac;
-    struct commonNaN commonNaN;
-    uint_fast64_t uiZ;
-    struct exp16_sig32 normExpSig;
-    union ui64_f64 uZ;
+    union jim_ui32_f32 uA;
+    jim_uint_fast32_t uiA;
+    jim_bool sign;
+    jim_int_fast16_t exp;
+    jim_uint_fast32_t frac;
+    struct jim_commonNaN commonNaN;
+    jim_uint_fast64_t uiZ;
+    struct jim_exp16_sig32 normExpSig;
+    union jim_ui64_f64 uZ;
 
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
     uA.f = a;
     uiA = uA.ui;
-    sign = signF32UI( uiA );
-    exp  = expF32UI( uiA );
-    frac = fracF32UI( uiA );
+    sign = jim_signF32UI( uiA );
+    exp  = jim_expF32UI( uiA );
+    frac = jim_fracF32UI( uiA );
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
     if ( exp == 0xFF ) {
         if ( frac ) {
-            softfloat_f32UIToCommonNaN( uiA, &commonNaN );
-            uiZ = softfloat_commonNaNToF64UI( &commonNaN );
+            jim_softfloat_f32UIToCommonNaN( uiA, &commonNaN );
+            uiZ = jim_softfloat_commonNaNToF64UI( &commonNaN );
         } else {
-            uiZ = packToF64UI( sign, 0x7FF, 0 );
+            uiZ = jim_packToF64UI( sign, 0x7FF, 0 );
         }
         goto uiZ;
     }
@@ -75,19 +74,18 @@ float64_t f32_to_f64( float32_t a )
     *------------------------------------------------------------------------*/
     if ( ! exp ) {
         if ( ! frac ) {
-            uiZ = packToF64UI( sign, 0, 0 );
+            uiZ = jim_packToF64UI( sign, 0, 0 );
             goto uiZ;
         }
-        normExpSig = softfloat_normSubnormalF32Sig( frac );
+        normExpSig = jim_softfloat_normSubnormalF32Sig( frac );
         exp = normExpSig.exp - 1;
         frac = normExpSig.sig;
     }
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
-    uiZ = packToF64UI( sign, exp + 0x380, (uint_fast64_t) frac<<29 );
+    uiZ = jim_packToF64UI( sign, exp + 0x380, (jim_uint_fast64_t) frac<<29 );
  uiZ:
     uZ.ui = uiZ;
     return uZ.f;
 
 }
-
