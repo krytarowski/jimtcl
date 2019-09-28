@@ -119,7 +119,7 @@ jim_int_fast64_t
  jim_softfloat_roundToI64(
      jim_bool, jim_uint_fast64_t, jim_uint_fast64_t, jim_uint_fast8_t, jim_bool );
 #else
-jim_int_fast64_t softfloat_roundMToI64( jim_bool, jim_uint32_t *, jim_uint_fast8_t, jim_bool );
+jim_int_fast64_t jim_softfloat_roundMToI64( jim_bool, jim_uint32_t *, jim_uint_fast8_t, jim_bool );
 #endif
 
 /*----------------------------------------------------------------------------
