@@ -95,37 +95,18 @@ struct jim_extFloat80M { jim_uint64_t signif; jim_uint16_t signExp; };
 | Compat macros
 *----------------------------------------------------------------------------*/
 
-#define jim_int_join_(c,suffix) c ## suffix
-#define jim_int_join(c,suffix) jim_int_join_(c,suffix)
+#define JIM_INT8_C(c)       c
+#define JIM_INT16_C(c)      c
+#define JIM_INT32_C(c)      c
+#define JIM_INT64_C(c)      c##LL
 
-#ifndef __INTMAX_C_SUFFIX__
+#define JIM_UINT8_C(c)      c
+#define JIM_UINT16_C(c)     c
+#define JIM_UINT32_C(c)     c
+#define JIM_UINT64_C(c)     c##ULL
 
-#define __INT8_C_SUFFIX__
-#define __INT16_C_SUFFIX__
-#define __INT32_C_SUFFIX__
-#define __INT64_C_SUFFIX__	LL
+#define JIM_INTMAX_C(c)     c##L
+#define JIM_UINTMAX_C(c)    c##UL
 
-#define __UINT8_C_SUFFIX__
-#define __UINT16_C_SUFFIX__
-#define __UINT32_C_SUFFIX__
-#define __UINT64_C_SUFFIX__	ULL
-
-#define __INTMAX_C_SUFFIX__	LL
-#define __UINTMAX_C_SUFFIX__	ULL
-
-#endif
-
-#define JIM_INT8_C(c)       jim_int_join(c,__INT8_C_SUFFIX__)
-#define JIM_INT16_C(c)      jim_int_join(c,__INT16_C_SUFFIX__)
-#define JIM_INT32_C(c)      jim_int_join(c,__INT32_C_SUFFIX__)
-#define JIM_INT64_C(c)      jim_int_join(c,__INT64_C_SUFFIX__)
-
-#define JIM_UINT8_C(c)      jim_int_join(c,__UINT8_C_SUFFIX__)
-#define JIM_UINT16_C(c)     jim_int_join(c,__UINT16_C_SUFFIX__)
-#define JIM_UINT32_C(c)     jim_int_join(c,__UINT32_C_SUFFIX__)
-#define JIM_UINT64_C(c)     jim_int_join(c,__UINT64_C_SUFFIX__)
-
-#define JIM_INTMAX_C(c)     jim_int_join(c,__INTMAX_C_SUFFIX__)
-#define JIM_UINTMAX_C(c)    jim_int_join(c,__UINTMAX_C_SUFFIX__)
-
-#endif
+JIM_CTASSERT(sizeof(long) == sizeof(void *));
+JIM_CTASSERT(sizeof(unsigned long) == sizeof(void *));
