@@ -34,34 +34,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "specialize.h"
-#include "softfloat.h"
+#include "jim.h"                                                                                                                                                                              
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-float64_t
- softfloat_subMagsF64( uint_fast64_t uiA, uint_fast64_t uiB, bool signZ )
+#include "jim-softfloat-specialize.h
+
+jim_float64_t
+ jim_softfloat_subMagsF64( jim_uint_fast64_t uiA, jim_uint_fast64_t uiB, jim_bool signZ )
 {
-    int_fast16_t expA;
-    uint_fast64_t sigA;
-    int_fast16_t expB;
-    uint_fast64_t sigB;
-    int_fast16_t expDiff;
-    uint_fast64_t uiZ;
-    int_fast64_t sigDiff;
-    int_fast8_t shiftDist;
-    int_fast16_t expZ;
-    uint_fast64_t sigZ;
-    union ui64_f64 uZ;
+    jim_int_fast16_t expA;
+    jim_uint_fast64_t sigA;
+    jim_int_fast16_t expB;
+    jim_uint_fast64_t sigB;
+    jim_int_fast16_t expDiff;
+    jim_uint_fast64_t uiZ;
+    jim_int_fast64_t sigDiff;
+    jim_int_fast8_t shiftDist;
+    jim_int_fast16_t expZ;
+    jim_uint_fast64_t sigZ;
+    union jim_ui64_f64 uZ;
 
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
-    expA = expF64UI( uiA );
-    sigA = fracF64UI( uiA );
-    expB = expF64UI( uiB );
-    sigB = fracF64UI( uiB );
+    expA = jim_expF64UI( uiA );
+    sigA = jim_fracF64UI( uiA );
+    expB = jim_expF64UI( uiB );
+    sigB = jim_fracF64UI( uiB );
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
     expDiff = expA - expB;
@@ -70,15 +69,15 @@ float64_t
         *--------------------------------------------------------------------*/
         if ( expA == 0x7FF ) {
             if ( sigA | sigB ) goto propagateNaN;
-            softfloat_raiseFlags( softfloat_flag_invalid );
-            uiZ = defaultNaNF64UI;
+            jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
+            uiZ = jim_defaultNaNF64UI;
             goto uiZ;
         }
         sigDiff = sigA - sigB;
         if ( ! sigDiff ) {
             uiZ =
-                packToF64UI(
-                    (softfloat_roundingMode == softfloat_round_min), 0, 0 );
+                jim_packToF64UI(
+                    (jim_softfloat_roundingMode == jim_softfloat_round_min), 0, 0 );
             goto uiZ;
         }
         if ( expA ) --expA;
@@ -86,13 +85,13 @@ float64_t
             signZ = ! signZ;
             sigDiff = -sigDiff;
         }
-        shiftDist = softfloat_countLeadingZeros64( sigDiff ) - 11;
+        shiftDist = jim_softfloat_countLeadingZeros64( sigDiff ) - 11;
         expZ = expA - shiftDist;
         if ( expZ < 0 ) {
             shiftDist = expA;
             expZ = 0;
         }
-        uiZ = packToF64UI( signZ, expZ, sigDiff<<shiftDist );
+        uiZ = jim_packToF64UI( signZ, expZ, sigDiff<<shiftDist );
         goto uiZ;
     } else {
         /*--------------------------------------------------------------------
@@ -105,12 +104,12 @@ float64_t
             signZ = ! signZ;
             if ( expB == 0x7FF ) {
                 if ( sigB ) goto propagateNaN;
-                uiZ = packToF64UI( signZ, 0x7FF, 0 );
+                uiZ = jim_packToF64UI( signZ, 0x7FF, 0 );
                 goto uiZ;
             }
-            sigA += expA ? UINT64_C( 0x4000000000000000 ) : sigA;
-            sigA = softfloat_shiftRightJam64( sigA, -expDiff );
-            sigB |= UINT64_C( 0x4000000000000000 );
+            sigA += expA ? JIM_UINT64_C( 0x4000000000000000 ) : sigA;
+            sigA = jim_softfloat_shiftRightJam64( sigA, -expDiff );
+            sigB |= JIM_UINT64_C( 0x4000000000000000 );
             expZ = expB;
             sigZ = sigB - sigA;
         } else {
@@ -121,21 +120,20 @@ float64_t
                 uiZ = uiA;
                 goto uiZ;
             }
-            sigB += expB ? UINT64_C( 0x4000000000000000 ) : sigB;
-            sigB = softfloat_shiftRightJam64( sigB, expDiff );
-            sigA |= UINT64_C( 0x4000000000000000 );
+            sigB += expB ? JIM_UINT64_C( 0x4000000000000000 ) : sigB;
+            sigB = jim_softfloat_shiftRightJam64( sigB, expDiff );
+            sigA |= JIM_UINT64_C( 0x4000000000000000 );
             expZ = expA;
             sigZ = sigA - sigB;
         }
-        return softfloat_normRoundPackToF64( signZ, expZ - 1, sigZ );
+        return jim_softfloat_normRoundPackToF64( signZ, expZ - 1, sigZ );
     }
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
  propagateNaN:
-    uiZ = softfloat_propagateNaNF64UI( uiA, uiB );
+    uiZ = jim_softfloat_propagateNaNF64UI( uiA, uiB );
  uiZ:
     uZ.ui = uiZ;
     return uZ.f;
 
 }
-
