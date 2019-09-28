@@ -44,9 +44,14 @@ int jim_double_isinf( jim_double a )
 {
     union jim_ui64_f64 uA;
     jim_uint_fast64_t uiA;
+    jim_int_fast16_t exp;
+    jim_uint_fast64_t frac;
 
     uA.f = a;
     uiA = uA.ui;
 
-    return ( jim_expF64UI(uiA) == 0x7FF ) && ( jim_fracF64UI(uiA) == JIM_INT64_C(0xFFFFFFFFFFFFF) );
+    exp = jim_expF64UI(uiA);
+    fract = jim_fracF64UI(uiA);
+
+    return ( exp == 0x7FF ) && ( fract == JIM_INT64_C(0xFFFFFFFFFFFFF) );
 }
