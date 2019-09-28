@@ -114,8 +114,8 @@ jim_double jim_double_mul( jim_double a, jim_double b )
 #else
     jim_softfloat_mul64To128M( sigA, sigB, sig128Z );
     sigZ =
-        (jim_uint64_t) jim_sig128Z[jim_indexWord( 4, 3 )]<<32 | jim_sig128Z[jim_indexWord( 4, 2 )];
-    if ( jim_sig128Z[jim_indexWord( 4, 1 )] || jim_sig128Z[jim_indexWord( 4, 0 )] ) sigZ |= 1;
+        (jim_uint64_t) sig128Z[jim_indexWord( 4, 3 )]<<32 | sig128Z[jim_indexWord( 4, 2 )];
+    if ( sig128Z[jim_indexWord( 4, 1 )] || sig128Z[jim_indexWord( 4, 0 )] ) sigZ |= 1;
 #endif
     if ( sigZ < JIM_UINT64_C( 0x4000000000000000 ) ) {
         --expZ;
@@ -132,7 +132,7 @@ jim_double jim_double_mul( jim_double a, jim_double b )
  infArg:
     if ( ! magBits ) {
         jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
-        uiZ = defaultNaNF64UI;
+        uiZ = jim_defaultNaNF64UI;
     } else {
         uiZ = jim_packToF64UI( signZ, 0x7FF, 0 );
     }
