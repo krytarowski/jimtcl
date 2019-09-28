@@ -121,7 +121,9 @@ struct jim_extFloat80M { jim_uint64_t signif; jim_uint16_t signExp; };
 JIM_CTASSERT(sizeof(long) == sizeof(void *));
 JIM_CTASSERT(sizeof(unsigned long) == sizeof(void *));
 
-#define JIM_INLINE inline
+#define JIM_INLINE static inline
 #define JIM_THREAD_LOCAL
+
+#define INLINE_LEVEL 5
 
 #endif

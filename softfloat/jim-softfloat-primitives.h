@@ -34,8 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#ifndef primitives_h
-#define primitives_h 1
+#ifndef JIM_SOFTFLOAT_PRIMITIVES_H
+#define JIM_SOFTFLOAT_PRIMITIVES_H
 
 #include "jim.h"
 #include "jim-softfloat-internals.h"
