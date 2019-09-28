@@ -53,5 +53,5 @@ int jim_double_isinf( jim_double a )
     exp = jim_expF64UI(uiA);
     frac = jim_fracF64UI(uiA);
 
-    return ( exp == 0x7FF ) && ( frac == JIM_INT64_C(0xFFFFFFFFFFFFF) );
+    return ( exp == 0x7FF ) && ( frac == JIM_INT64_C(0) );
 }
