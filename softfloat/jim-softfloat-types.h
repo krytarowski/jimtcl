@@ -77,6 +77,16 @@ typedef signed short jim_int_fast16_t;
 typedef signed int jim_int_fast32_t;
 typedef signed long long jim_int_fast64_t;
 
+typedef unsigned char jim_uint_least8_t;
+typedef unsigned short jim_uint_least16_t;
+typedef unsigned int jim_uint_least32_t;
+typedef unsigned long long jim_uint_least64_t;
+
+typedef signed char jim_int_least8_t;
+typedef signed short jim_int_least16_t;
+typedef signed int jim_int_least32_t;
+typedef signed long long jim_int_least64_t;
+
 typedef int jim_bool;
 
 typedef struct { unsigned short v; } jim_float16_t;
