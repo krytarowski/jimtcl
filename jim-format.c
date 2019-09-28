@@ -421,7 +421,7 @@ Jim_Obj *Jim_FormatString(Jim_Interp *interp, Jim_Obj *fmtObjPtr, int objc, Jim_
             }
 
             if (doubleType) {
-                snprintf(num_buffer, length + 1, spec, d);
+                jim_stod(d, spec, num_buffer, length + 1);
             }
             else {
                 formatted_bytes = snprintf(num_buffer, length + 1, spec, w);
