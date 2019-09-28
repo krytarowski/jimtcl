@@ -108,8 +108,8 @@ jim_float16_t
 
 #define jim_isNaNF32UI( a ) (((~(a) & 0x7F800000) == 0) && ((a) & 0x007FFFFF))
 
-struct jim_exp16_sig32 { jim_int_fast16_t exp; jim_jim_uint_fast32_t sig; };
-struct jim_exp16_sig32 jim_softfloat_normSubnormalF32Sig( jim_jim_uint_fast32_t );
+struct jim_exp16_sig32 { jim_int_fast16_t exp; jim_uint_fast32_t sig; };
+struct jim_exp16_sig32 jim_softfloat_normSubnormalF32Sig( jim_uint_fast32_t );
 
 jim_float32_t jim_softfloat_roundPackToF32( jim_bool, int_fast16_t, jim_uint_fast32_t );
 jim_float32_t jim_softfloat_normRoundPackToF32( jim_bool, int_fast16_t, jim_uint_fast32_t );
@@ -136,10 +136,10 @@ jim_float64_t jim_softfloat_roundPackToF64( jim_bool, int_fast16_t, uint_fast64_
 jim_float64_t jim_softfloat_normRoundPackToF64( jim_bool, int_fast16_t, uint_fast64_t );
 
 jim_float64_t jim_softfloat_addMagsF64( jim_uint_fast64_t, jim_uint_fast64_t, jim_bool );
-jim_float64_t jim_softfloat_subMagsF64( jim_jim_uint_fast64_t, jim_jim_uint_fast64_t, jim_bool );
+jim_float64_t jim_softfloat_subMagsF64( jim_uint_fast64_t, jim_uint_fast64_t, jim_bool );
 jim_float64_t
  jim_softfloat_mulAddF64(
-     jim_jim_uint_fast64_t, jim_jim_uint_fast64_t, jim_jim_uint_fast64_t, jim_uint_fast8_t );
+     jim_uint_fast64_t, jim_uint_fast64_t, jim_uint_fast64_t, jim_uint_fast8_t );
 
 /*----------------------------------------------------------------------------
 *----------------------------------------------------------------------------*/
@@ -155,7 +155,7 @@ jim_float64_t
 *----------------------------------------------------------------------------*/
 
 struct jim_exp32_sig64 { jim_int_fast32_t exp; jim_uint64_t sig; };
-struct jim_exp32_sig64 jim_softfloat_normSubnormalExtF80Sig( jim_jim_uint_fast64_t );
+struct jim_exp32_sig64 jim_softfloat_normSubnormalExtF80Sig( jim_uint_fast64_t );
 
 jim_extFloat80_t
  jim_softfloat_roundPackToExtF80(
