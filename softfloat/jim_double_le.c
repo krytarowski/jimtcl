@@ -52,7 +52,7 @@ int jim_double_le( jim_double a, jim_double b )
     uiB = uB.ui;
     if ( jim_isNaNF64UI( uiA ) || jim_isNaNF64UI( uiB ) ) {
         jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
-        return false;
+        return 0;
     }
     signA = jim_signF64UI( uiA );
     signB = jim_signF64UI( uiB );
