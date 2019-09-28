@@ -34,34 +34,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-bool f64_lt( float64_t a, float64_t b )
+int jim_double_lt( jim_double a, jim_double b )
 {
-    union ui64_f64 uA;
-    uint_fast64_t uiA;
-    union ui64_f64 uB;
-    uint_fast64_t uiB;
-    bool signA, signB;
+    union jim_ui64_f64 uA;
+    jim_uint_fast64_t uiA;
+    union jim_ui64_f64 uB;
+    jim_uint_fast64_t uiB;
+    jim_bool signA, signB;
 
     uA.f = a;
     uiA = uA.ui;
     uB.f = b;
     uiB = uB.ui;
-    if ( isNaNF64UI( uiA ) || isNaNF64UI( uiB ) ) {
-        softfloat_raiseFlags( softfloat_flag_invalid );
+    if ( jim_isNaNF64UI( uiA ) || jim_isNaNF64UI( uiB ) ) {
+        jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
         return false;
     }
-    signA = signF64UI( uiA );
-    signB = signF64UI( uiB );
+    signA = jim_signF64UI( uiA );
+    signB = jim_signF64UI( uiB );
     return
         (signA != signB)
-            ? signA && ((uiA | uiB) & UINT64_C( 0x7FFFFFFFFFFFFFFF ))
+            ? signA && ((uiA | uiB) & JIM_UINT64_C( 0x7FFFFFFFFFFFFFFF ))
             : (uiA != uiB) && (signA ^ (uiA < uiB));
 
 }
-
