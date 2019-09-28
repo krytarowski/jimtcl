@@ -75,8 +75,6 @@
 #ifndef HAVE_SOFTFLOAT
 /* For INFINITY, even if math functions are not enabled */
 #include <math.h>
-#else
-#define INFINITY JIM_DOUBLE_ZERO // jim_infinity()
 #endif
 
 /* We may decide to switch to using $[...] after all, so leave it as an option */
@@ -8169,7 +8167,8 @@ static int JimExprOpBin(Jim_Interp *interp, struct JimExprNode *node)
 #ifdef INFINITY
                     dC = jim_double_lt(dA, JIM_DOUBLE_ZERO) ? jim_double_mul(JIM_DOUBLE_MINUSONE, INFINITY) : INFINITY;
 #else
-                    dC = (dA < 0 ? -1.0 : 1.0) * jim_strtod("Inf", NULL);
+                    dC = jim_double_lt(dA, JIM_DOUBLE_ZERO) ? JIM_DOUBLE_MINUSONE : JIM_DOUBLE_ONE;
+                    dC = jim_double_mul(dC, jim_strtod("Inf", NULL));
 #endif
                 }
                 else {
