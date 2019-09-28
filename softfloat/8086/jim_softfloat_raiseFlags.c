@@ -34,8 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include "platform.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
 /*----------------------------------------------------------------------------
 | Raises the exceptions specified by `flags'.  Floating-point traps can be
@@ -43,10 +44,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 | to substitute a result value.  If traps are not implemented, this routine
 | should be simply `softfloat_exceptionFlags |= flags;'.
 *----------------------------------------------------------------------------*/
-void softfloat_raiseFlags( uint_fast8_t flags )
+void jim_softfloat_raiseFlags( jim_uint_fast8_t flags )
 {
 
-    softfloat_exceptionFlags |= flags;
+    jim_softfloat_exceptionFlags |= flags;
 
 }
-

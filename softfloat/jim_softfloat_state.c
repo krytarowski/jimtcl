@@ -48,8 +48,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define JIM_THREAD_LOCAL
 #endif
 
-JIM_THREAD_LOCAL jim_uint_fast8_t softfloat_roundingMode = jim_softfloat_round_near_even;
-JIM_THREAD_LOCAL jim_uint_fast8_t softfloat_detectTininess = jim_init_detectTininess;
-JIM_THREAD_LOCAL jim_uint_fast8_t softfloat_exceptionFlags = 0;
+JIM_THREAD_LOCAL jim_uint_fast8_t jim_softfloat_roundingMode = jim_softfloat_round_near_even;
+JIM_THREAD_LOCAL jim_uint_fast8_t jim_softfloat_detectTininess = jim_init_detectTininess;
+JIM_THREAD_LOCAL jim_uint_fast8_t jim_softfloat_exceptionFlags = 0;
 
-JIM_THREAD_LOCAL jim_uint_fast8_t extF80_roundingPrecision = 80;
+JIM_THREAD_LOCAL jim_uint_fast8_t jim_extF80_roundingPrecision = 80;
