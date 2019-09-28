@@ -38,14 +38,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-floats.h"
 #include "jim-softfloat-internals.h"
 
-int jim_stod( jim_double d, const char *format, char *str, unsigned int len )
+jim_double jim_strtod( const char *nptr, char **endptr )
 {
     union {
         jim_double jd;
         double reald;
     } u;
 
-    u.jd = d;
-
-    return snprintf(str, len, format, u.reald);
+    u.reald = strtod(nptr, endptr);
+    return u.jd;
 }
