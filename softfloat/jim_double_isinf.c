@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "jim-softfloat-specialize.h"
 
-int jim_double_isnan( jim_double a )
+int jim_double_isinf( jim_double a )
 {
     union jim_ui64_f64 uA;
     jim_uint_fast64_t uiA;
@@ -48,5 +48,5 @@ int jim_double_isnan( jim_double a )
     uA.f = a;
     uiA = uA.ui;
 
-    return ( jim_expF64UI(uiA) == 0x7FF ) && ( jim_fracF64UI(uia) == JIM_INT64_C(0xFFFFFFFFFFFFF) );
+    return ( jim_expF64UI(uiA) == 0x7FF ) && ( jim_fracF64UI(uiA) == JIM_INT64_C(0xFFFFFFFFFFFFF) );
 }
