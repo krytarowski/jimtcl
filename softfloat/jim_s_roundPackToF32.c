@@ -51,12 +51,12 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
     roundingMode = softfloat_roundingMode;
-    roundNearEven = (roundingMode == softfloat_round_near_even);
+    roundNearEven = (roundingMode == jim_softfloat_round_near_even);
     roundIncrement = 0x40;
-    if ( ! roundNearEven && (roundingMode != softfloat_round_near_maxMag) ) {
+    if ( ! roundNearEven && (roundingMode != jim_softfloat_round_near_maxMag) ) {
         roundIncrement =
             (roundingMode
-                 == (sign ? softfloat_round_min : softfloat_round_max))
+                 == (sign ? jim_softfloat_round_min : jim_softfloat_round_max))
                 ? 0x7F
                 : 0;
     }
@@ -68,19 +68,19 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
             /*----------------------------------------------------------------
             *----------------------------------------------------------------*/
             isTiny =
-                (softfloat_detectTininess == softfloat_tininess_beforeRounding)
+                (softfloat_detectTininess == jim_softfloat_tininess_beforeRounding)
                     || (exp < -1) || (sig + roundIncrement < 0x80000000);
-            sig = softfloat_shiftRightJam32( sig, -exp );
+            sig = jim_softfloat_shiftRightJam32( sig, -exp );
             exp = 0;
             roundBits = sig & 0x7F;
             if ( isTiny && roundBits ) {
-                softfloat_raiseFlags( softfloat_flag_underflow );
+                jim_softfloat_raiseFlags( softfloat_flag_underflow );
             }
         } else if ( (0xFD < exp) || (0x80000000 <= sig + roundIncrement) ) {
             /*----------------------------------------------------------------
             *----------------------------------------------------------------*/
-            softfloat_raiseFlags(
-                softfloat_flag_overflow | softfloat_flag_inexact );
+            jim_softfloat_raiseFlags(
+                jim_softfloat_flag_overflow | jim_softfloat_flag_inexact );
             uiZ = packToF32UI( sign, 0xFF, 0 ) - ! roundIncrement;
             goto uiZ;
         }
@@ -89,20 +89,20 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
     *------------------------------------------------------------------------*/
     sig = (sig + roundIncrement)>>7;
     if ( roundBits ) {
-        softfloat_exceptionFlags |= softfloat_flag_inexact;
+        softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
 #ifdef SOFTFLOAT_ROUND_ODD
-        if ( roundingMode == softfloat_round_odd ) {
+        if ( roundingMode == jim_softfloat_round_odd ) {
             sig |= 1;
             goto packReturn;
         }
 #endif
     }
-    sig &= ~(uint_fast32_t) (! (roundBits ^ 0x40) & roundNearEven);
+    sig &= ~(uint_fast32_t) (! (roundBits ^ 0x40) & jim_roundNearEven);
     if ( ! sig ) exp = 0;
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
  packReturn:
-    uiZ = packToF32UI( sign, exp, sig );
+    uiZ = jim_packToF32UI( sign, exp, sig );
  uiZ:
     uZ.ui = uiZ;
     return uZ.f;
