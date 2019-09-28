@@ -41,7 +41,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef jim_softfloat_countLeadingZeros64
 
 #define jim_softfloat_countLeadingZeros64 jim_softfloat_countLeadingZeros64
-#include "primitives.h"
 
 jim_uint_fast8_t jim_softfloat_countLeadingZeros64( jim_uint64_t a )
 {
