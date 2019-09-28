@@ -38,6 +38,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-floats.h"
 #include "jim-softfloat-internals.h"
 
+#include "jim-softfloat-specialize.h"
+
 jim_wide jim_double_to_wide( jim_double a )
 {
     const jim_uint_fast8_t roundingMode = 0;
@@ -96,7 +98,7 @@ jim_wide jim_double_to_wide( jim_double a )
  invalid:
     jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
     return
-        (exp == 0x7FF) && jim_fracF64UI( uiA ) ? i64_fromNaN
-            : sign ? i64_fromNegOverflow : i64_fromPosOverflow;
+        (exp == 0x7FF) && jim_fracF64UI( uiA ) ? jim_i64_fromNaN
+            : sign ? jim_i64_fromNegOverflow : jim_i64_fromPosOverflow;
 
 }

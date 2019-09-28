@@ -38,11 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-floats.h"
 #include "jim-softfloat-internals.h"
 
-#if defined(__x86_64__)
-#include "8086/jim-softfloat-specialize.h"
-#else
-#error Not ported
-#endif
+#include "jim-softfloat-specialize.h"
 
 #ifndef JIM_THREAD_LOCAL
 #define JIM_THREAD_LOCAL
