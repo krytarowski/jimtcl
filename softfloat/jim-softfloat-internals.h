@@ -132,8 +132,8 @@ jim_float32_t
 struct jim_exp16_sig64 { jim_int_fast16_t exp; jim_uint_fast64_t sig; };
 struct jim_exp16_sig64 jim_softfloat_normSubnormalF64Sig( jim_uint_fast64_t );
 
-jim_float64_t jim_softfloat_roundPackToF64( jim_bool, int_fast16_t, uint_fast64_t );
-jim_float64_t jim_softfloat_normRoundPackToF64( jim_bool, int_fast16_t, uint_fast64_t );
+jim_float64_t jim_softfloat_roundPackToF64( jim_bool, jim_int_fast16_t, jim_uint_fast64_t );
+jim_float64_t jim_softfloat_normRoundPackToF64( jim_bool, jim_int_fast16_t, jim_uint_fast64_t );
 
 jim_float64_t jim_softfloat_addMagsF64( jim_uint_fast64_t, jim_uint_fast64_t, jim_bool );
 jim_float64_t jim_softfloat_subMagsF64( jim_uint_fast64_t, jim_uint_fast64_t, jim_bool );

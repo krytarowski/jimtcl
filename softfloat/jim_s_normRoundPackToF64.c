@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-softfloat-internals.h"
 
 jim_double
- softfloat_normRoundPackToF64( jim_bool sign, jim_int_fast16_t exp, jim_uint_fast64_t sig )
+jim_softfloat_normRoundPackToF64( jim_bool sign, jim_int_fast16_t exp, jim_uint_fast64_t sig )
 {
     jim_int_fast8_t shiftDist;
     union jim_ui64_f64 uZ;
