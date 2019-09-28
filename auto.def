@@ -311,7 +311,7 @@ if {[opt-bool softfloat]} {
     lappend extra_objs softfloat/jim_s_normRoundPackToF64.o softfloat/jim_s_countLeadingZeros64.o softfloat/jim_s_roundPackToF64.o
     lappend extra_objs softfloat/jim_s_roundPackToF32.o softfloat/jim_s_countLeadingZeros8.o softfloat/jim_softfloat_state.o
     lappend extra_objs softfloat/jim_double_to_wide.o softfloat/jim_s_roundMToI64.o softfloat/jim_s_shiftRightJamM.o
-    lappend extra_objs softfloat/jim_s_shortShiftRightJamM.o softfloat/jim_double_mul.o
+    lappend extra_objs softfloat/jim_s_shortShiftRightJamM.o softfloat/jim_double_mul.o softfloat/jim_s_mul64To128M.o
     lappend extra_objs softfloat/8086/jim_softfloat_raiseFlags.o softfloat/8086/jim_s_propagateNaNF64UI.o
 } else {
     lappend extra_objs jim-floats.o
