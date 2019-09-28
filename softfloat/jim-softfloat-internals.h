@@ -296,19 +296,19 @@ int
 jim_bool jim_softfloat_isNaNF128M( const jim_uint32_t * );
 
 jim_bool
- softfloat_tryPropagateNaNF128M(
+ jim_softfloat_tryPropagateNaNF128M(
      const jim_uint32_t *, const jim_uint32_t *, jim_uint32_t * );
-void softfloat_invalidF128M( jim_uint32_t * );
+void jim_softfloat_invalidF128M( jim_uint32_t * );
 
-int softfloat_shiftNormSigF128M( const jim_uint32_t *, jim_uint_fast8_t, jim_uint32_t * );
+int jim_softfloat_shiftNormSigF128M( const jim_uint32_t *, jim_uint_fast8_t, jim_uint32_t * );
 
-void softfloat_roundPackMToF128M( jim_bool, int32_t, jim_uint32_t *, jim_uint32_t * );
-void softfloat_normRoundPackMToF128M( jim_bool, int32_t, jim_uint32_t *, jim_uint32_t * );
+void jim_softfloat_roundPackMToF128M( jim_bool, int32_t, jim_uint32_t *, jim_uint32_t * );
+void jim_softfloat_normRoundPackMToF128M( jim_bool, int32_t, jim_uint32_t *, jim_uint32_t * );
 
 void
- softfloat_addF128M( const jim_uint32_t *, const jim_uint32_t *, jim_uint32_t *, jim_bool );
+ jim_softfloat_addF128M( const jim_uint32_t *, const jim_uint32_t *, jim_uint32_t *, jim_bool );
 void
- softfloat_mulAddF128M(
+ jim_softfloat_mulAddF128M(
      const jim_uint32_t *,
      const jim_uint32_t *,
      const jim_uint32_t *,
