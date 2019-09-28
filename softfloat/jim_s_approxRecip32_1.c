@@ -34,33 +34,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdint.h>
-#include "platform.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
 #ifndef softfloat_approxRecip32_1
 
-extern const uint16_t softfloat_approxRecip_1k0s[16];
-extern const uint16_t softfloat_approxRecip_1k1s[16];
+extern const uint16_t jim_softfloat_approxRecip_1k0s[16];
+extern const uint16_t jim_softfloat_approxRecip_1k1s[16];
 
-uint32_t softfloat_approxRecip32_1( uint32_t a )
+jim_uint32_t jim_softfloat_approxRecip32_1( jim_uint32_t a )
 {
     int index;
-    uint16_t eps, r0;
-    uint32_t sigma0;
-    uint_fast32_t r;
-    uint32_t sqrSigma0;
+    jim_uint16_t eps, r0;
+    jim_uint32_t sigma0;
+    jim_uint_fast32_t r;
+    jim_uint32_t sqrSigma0;
 
     index = a>>27 & 0xF;
-    eps = (uint16_t) (a>>11);
-    r0 = softfloat_approxRecip_1k0s[index]
-             - ((softfloat_approxRecip_1k1s[index] * (uint_fast32_t) eps)>>20);
-    sigma0 = ~(uint_fast32_t) ((r0 * (uint_fast64_t) a)>>7);
-    r = ((uint_fast32_t) r0<<16) + ((r0 * (uint_fast64_t) sigma0)>>24);
-    sqrSigma0 = ((uint_fast64_t) sigma0 * sigma0)>>32;
-    r += ((uint32_t) r * (uint_fast64_t) sqrSigma0)>>48;
+    eps = (jim_uint16_t) (a>>11);
+    r0 = jim_softfloat_approxRecip_1k0s[index]
+             - ((jim_softfloat_approxRecip_1k1s[index] * (jim_uint_fast32_t) eps)>>20);
+    sigma0 = ~(jim_uint_fast32_t) ((r0 * (jim_uint_fast64_t) a)>>7);
+    r = ((jim_uint_fast32_t) r0<<16) + ((r0 * (jim_uint_fast64_t) sigma0)>>24);
+    sqrSigma0 = ((jim_uint_fast64_t) sigma0 * sigma0)>>32;
+    r += ((jim_uint32_t) r * (jim_uint_fast64_t) sqrSigma0)>>48;
     return r;
 
 }
 
 #endif
-
