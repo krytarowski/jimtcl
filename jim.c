@@ -8562,7 +8562,7 @@ static int JimParseExprNumber(struct JimParserCtx *pc)
         /* Some stupid compilers insist they are cleverer that
          * we are. Even a (void) cast doesn't prevent this warning!
          */
-        if (strtod(pc->tstart, &end)) { /* nothing */ }
+        if (jim_double_to_wide(jim_strtod(pc->tstart, &end))) { /* nothing */ }
         if (end == pc->tstart)
             return JIM_ERR;
         if (end > pc->p) {
