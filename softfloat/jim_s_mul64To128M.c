@@ -34,35 +34,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdint.h>
-#include "platform.h"
-#include "primitiveTypes.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-#ifndef softfloat_mul64To128M
+#ifndef jim_softfloat_mul64To128M
 
-void softfloat_mul64To128M( uint64_t a, uint64_t b, uint32_t *zPtr )
+void jim_softfloat_mul64To128M( jim_uint64_t a, jim_uint64_t b, jim_uint32_t *zPtr )
 {
-    uint32_t a32, a0, b32, b0;
-    uint64_t z0, mid1, z64, mid;
+    jim_uint32_t a32, a0, b32, b0;
+    jim_uint64_t z0, mid1, z64, mid;
 
     a32 = a>>32;
     a0 = a;
     b32 = b>>32;
     b0 = b;
-    z0 = (uint64_t) a0 * b0;
-    mid1 = (uint64_t) a32 * b0;
+    z0 = (jim_uint64_t) a0 * b0;
+    mid1 = (jim_uint64_t) a32 * b0;
     mid = mid1 + (uint64_t) a0 * b32;
-    z64 = (uint64_t) a32 * b32;
-    z64 += (uint64_t) (mid < mid1)<<32 | mid>>32;
+    z64 = (jim_uint64_t) a32 * b32;
+    z64 += (jim_uint64_t) (mid < mid1)<<32 | mid>>32;
     mid <<= 32;
     z0 += mid;
-    zPtr[indexWord( 4, 1 )] = z0>>32;
-    zPtr[indexWord( 4, 0 )] = z0;
+    zPtr[jim_indexWord( 4, 1 )] = z0>>32;
+    zPtr[jim_indexWord( 4, 0 )] = z0;
     z64 += (z0 < mid);
-    zPtr[indexWord( 4, 3 )] = z64>>32;
-    zPtr[indexWord( 4, 2 )] = z64;
+    zPtr[jim_indexWord( 4, 3 )] = z64>>32;
+    zPtr[jim_indexWord( 4, 2 )] = z64;
 
 }
 
 #endif
-
