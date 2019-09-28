@@ -68,14 +68,14 @@ jim_double
             /*----------------------------------------------------------------
             *----------------------------------------------------------------*/
             isTiny =
-                (softfloat_detectTininess == jim_softfloat_tininess_beforeRounding)
+                (jim_softfloat_detectTininess == jim_softfloat_tininess_beforeRounding)
                     || (exp < -1)
                     || (sig + roundIncrement < JIM_UINT64_C( 0x8000000000000000 ));
-            sig = softfloat_shiftRightJam64( sig, -exp );
+            sig = jim_softfloat_shiftRightJam64( sig, -exp );
             exp = 0;
             roundBits = sig & 0x3FF;
             if ( isTiny && roundBits ) {
-                jim_softfloat_raiseFlags( softfloat_flag_underflow );
+                jim_softfloat_raiseFlags( jim_softfloat_flag_underflow );
             }
         } else if (
             (0x7FD < exp)
