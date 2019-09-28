@@ -315,6 +315,7 @@ if {[opt-bool softfloat]} {
     lappend extra_objs softfloat/jim_s_normSubnormalF64Sig.o softfloat/jim_double_div.o softfloat/jim_s_approxRecip32_1.o
     lappend extra_objs softfloat/jim_s_approxRecip_1Ks.o softfloat/jim_double_sub.o softfloat/jim_s_subMagsF64.o
     lappend extra_objs softfloat/jim_s_addMagsF64.o softfloat/jim_double_eq.o softfloat/jim_double_neq.o
+    lappend extra_objs softfloat/jim_double_add.o
     lappend extra_objs softfloat/8086/jim_softfloat_raiseFlags.o softfloat/8086/jim_s_propagateNaNF64UI.o
 } else {
     lappend extra_objs jim-floats.o
