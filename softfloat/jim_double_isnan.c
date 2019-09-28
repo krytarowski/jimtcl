@@ -43,10 +43,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int jim_double_isnan( jim_double a )
 {
     union jim_ui64_f64 uA;
-    jim_uint_fast64_t uiA;
 
     uA.f = a;
-    uiA = uA.ui;
+    return jim_isNaNF64UI( uA.ui );
 
-    return jim_isNaNF64UI( uiA );
 }
