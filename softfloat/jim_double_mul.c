@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "jim-softfloat-specialize.h"
 
-jim_double f64_mul( jim_double a, jim_double b )
+jim_double jim_double_mul( jim_double a, jim_double b )
 {
     union jim_ui64_f64 uA;
     jim_uint_fast64_t uiA;
