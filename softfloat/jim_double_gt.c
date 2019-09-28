@@ -40,5 +40,5 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int jim_double_gt( jim_double a, jim_double b )
 {
-    return jim_double_le ( b, a );
+    return jim_double_lt ( b, a );
 }
