@@ -82,8 +82,8 @@ void
             ptr = zPtr + jim_indexWordLo( size_words );
             for ( i = size_words - wordDist; i; --i ) {
                 *ptr = *aPtr;
-                aPtr += wordIncr;
-                ptr += wordIncr;
+                aPtr += jim_wordIncr;
+                ptr += jim_wordIncr;
             }
         }
         ptr = zPtr + jim_indexMultiwordHi( size_words, wordDist );
