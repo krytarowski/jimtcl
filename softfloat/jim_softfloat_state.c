@@ -34,19 +34,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "specialize.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-#ifndef THREAD_LOCAL
-#define THREAD_LOCAL
+#ifndef JIM_THREAD_LOCAL
+#define JIM_THREAD_LOCAL
 #endif
 
-THREAD_LOCAL uint_fast8_t softfloat_roundingMode = softfloat_round_near_even;
-THREAD_LOCAL uint_fast8_t softfloat_detectTininess = init_detectTininess;
-THREAD_LOCAL uint_fast8_t softfloat_exceptionFlags = 0;
+JIM_THREAD_LOCAL jim_uint_fast8_t softfloat_roundingMode = jim_softfloat_round_near_even;
+JIM_THREAD_LOCAL jim_uint_fast8_t softfloat_detectTininess = jim_init_detectTininess;
+JIM_THREAD_LOCAL jim_uint_fast8_t softfloat_exceptionFlags = 0;
 
-THREAD_LOCAL uint_fast8_t extF80_roundingPrecision = 80;
-
+JIM_THREAD_LOCAL jim_uint_fast8_t extF80_roundingPrecision = 80;

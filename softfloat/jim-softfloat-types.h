@@ -122,5 +122,6 @@ JIM_CTASSERT(sizeof(long) == sizeof(void *));
 JIM_CTASSERT(sizeof(unsigned long) == sizeof(void *));
 
 #define JIM_INLINE inline
+#define JIM_THREAD_LOCAL
 
 #endif
