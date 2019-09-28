@@ -43,7 +43,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 jim_wide jim_double_to_wide( jim_double a )
 {
     const jim_uint_fast8_t roundingMode = 0;
-    const jim_bool exact = 1;
+    const jim_bool exact = 0;
 
     union jim_ui64_f64 uA;
     jim_uint_fast64_t uiA;
