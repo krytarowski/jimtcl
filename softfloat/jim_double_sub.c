@@ -34,41 +34,38 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-float64_t f64_sub( float64_t a, float64_t b )
+jim_double jim_double_sub( jim_double a, jim_double b )
 {
-    union ui64_f64 uA;
-    uint_fast64_t uiA;
-    bool signA;
-    union ui64_f64 uB;
-    uint_fast64_t uiB;
-    bool signB;
+    union jim_ui64_f64 uA;
+    jim_uint_fast64_t uiA;
+    jim_bool signA;
+    union jim_ui64_f64 uB;
+    jim_uint_fast64_t uiB;
+    jim_bool signB;
 #if ! defined INLINE_LEVEL || (INLINE_LEVEL < 2)
-    float64_t (*magsFuncPtr)( uint_fast64_t, uint_fast64_t, bool );
+    float64_t (*magsFuncPtr)( jim_uint_fast64_t, jim_uint_fast64_t, jim_bool );
 #endif
 
     uA.f = a;
     uiA = uA.ui;
-    signA = signF64UI( uiA );
+    signA = jim_signF64UI( uiA );
     uB.f = b;
     uiB = uB.ui;
-    signB = signF64UI( uiB );
+    signB = jim_signF64UI( uiB );
 #if defined INLINE_LEVEL && (2 <= INLINE_LEVEL)
     if ( signA == signB ) {
-        return softfloat_subMagsF64( uiA, uiB, signA );
+        return jim_softfloat_subMagsF64( uiA, uiB, signA );
     } else {
-        return softfloat_addMagsF64( uiA, uiB, signA );
+        return jim_softfloat_addMagsF64( uiA, uiB, signA );
     }
 #else
     magsFuncPtr =
-        (signA == signB) ? softfloat_subMagsF64 : softfloat_addMagsF64;
+        (signA == signB) ? jim_softfloat_subMagsF64 : jim_softfloat_addMagsF64;
     return (*magsFuncPtr)( uiA, uiB, signA );
 #endif
 
 }
-
