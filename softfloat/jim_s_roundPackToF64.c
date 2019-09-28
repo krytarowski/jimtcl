@@ -38,8 +38,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-floats.h"
 #include "jim-softfloat-internals.h"
 
-#error 1
-
 jim_double
  jim_softfloat_roundPackToF64( jim_bool sign, jim_int_fast16_t exp, jim_uint_fast64_t sig )
 {
