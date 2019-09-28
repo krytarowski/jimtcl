@@ -34,10 +34,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdint.h>
-#include "platform.h"
-#include "specialize.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
+
+#include "jim-softfloat-specialize.h"
 
 /*----------------------------------------------------------------------------
 | Assuming `uiA' has the bit pattern of a 64-bit floating-point NaN, converts
@@ -45,15 +46,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 | location pointed to by `zPtr'.  If the NaN is a signaling NaN, the invalid
 | exception is raised.
 *----------------------------------------------------------------------------*/
-void softfloat_f64UIToCommonNaN( uint_fast64_t uiA, struct commonNaN *zPtr )
+void jim_softfloat_f64UIToCommonNaN( jim_uint_fast64_t uiA, struct jim_commonNaN *zPtr )
 {
 
-    if ( softfloat_isSigNaNF64UI( uiA ) ) {
-        softfloat_raiseFlags( softfloat_flag_invalid );
+    if ( jim_softfloat_isSigNaNF64UI( uiA ) ) {
+        jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
     }
     zPtr->sign = uiA>>63;
     zPtr->v64  = uiA<<12;
     zPtr->v0   = 0;
 
 }
-
