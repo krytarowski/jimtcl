@@ -126,4 +126,20 @@ JIM_CTASSERT(sizeof(unsigned long) == sizeof(void *));
 
 #define INLINE_LEVEL 5
 
+/*----------------------------------------------------------------------------
+| These macros are used to isolate the differences in word order between big-
+| endian and little-endian platforms.
+*----------------------------------------------------------------------------*/
+
+#define jim_wordIncr 1
+#define jim_indexWord( total, n ) (n)
+#define jim_indexWordHi( total ) ((total) - 1)
+#define jim_indexWordLo( total ) 0
+#define jim_indexMultiword( total, m, n ) (n)
+#define jim_indexMultiwordHi( total, n ) ((total) - (n))
+#define jim_indexMultiwordLo( total, n ) 0
+#define jim_indexMultiwordHiBut( total, n ) (n)
+#define jim_indexMultiwordLoBut( total, n ) 0
+#define JIM_INIT_UINTM4( v3, v2, v1, v0 ) { v0, v1, v2, v3 }
+
 #endif

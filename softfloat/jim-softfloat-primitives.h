@@ -656,10 +656,10 @@ void
  jim_softfloat_shortShiftLeft64To96M(
      jim_uint64_t a, jim_uint_fast8_t dist, jim_uint32_t *zPtr )
 {
-    zPtr[indexWord( 3, 0 )] = (jim_uint32_t) a<<dist;
+    zPtr[jim_indexWord( 3, 0 )] = (jim_uint32_t) a<<dist;
     a >>= 32 - dist;
-    zPtr[indexWord( 3, 2 )] = a>>32;
-    zPtr[indexWord( 3, 1 )] = a;
+    zPtr[jim_indexWord( 3, 2 )] = a>>32;
+    zPtr[jim_indexWord( 3, 1 )] = a;
 }
 #else
 void
