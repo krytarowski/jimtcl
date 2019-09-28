@@ -42,6 +42,45 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "jim-softfloat-primitives.h"
 #include "jim-softfloat-types.h"
 
+/*----------------------------------------------------------------------------
+| Software floating-point underflow tininess-detection mode.
+*----------------------------------------------------------------------------*/
+extern JIM_THREAD_LOCAL jim_uint_fast8_t jim_softfloat_detectTininess;
+enum {
+    jim_softfloat_tininess_beforeRounding = 0,
+    jim_softfloat_tininess_afterRounding  = 1
+};
+
+/*----------------------------------------------------------------------------
+| Software floating-point rounding mode.  (Mode "odd" is supported only if
+| SoftFloat is compiled with macro 'SOFTFLOAT_ROUND_ODD' defined.)
+*----------------------------------------------------------------------------*/
+extern JIM_THREAD_LOCAL jim_uint_fast8_t jim_softfloat_roundingMode;
+enum {
+    jim_softfloat_round_near_even   = 0,
+    jim_softfloat_round_minMag      = 1,
+    jim_softfloat_round_min         = 2,
+    jim_softfloat_round_max         = 3,
+    jim_softfloat_round_near_maxMag = 4,
+    jim_softfloat_round_odd         = 6
+};
+
+/*----------------------------------------------------------------------------
+| Software floating-point exception flags.
+*----------------------------------------------------------------------------*/
+extern JIM_THREAD_LOCAL jim_uint_fast8_t jim_softfloat_exceptionFlags;
+enum {
+    jim_softfloat_flag_inexact   =  1,
+    jim_softfloat_flag_underflow =  2,
+    jim_softfloat_flag_overflow  =  4,
+    jim_softfloat_flag_infinite  =  8,
+    jim_softfloat_flag_invalid   = 16
+};
+
+/*----------------------------------------------------------------------------
+| Misc
+*----------------------------------------------------------------------------*/
+
 union jim_ui16_f16 { jim_uint16_t ui; jim_float16_t f; };
 union jim_ui32_f32 { jim_uint32_t ui; jim_float32_t f; };
 union jim_ui64_f64 { jim_uint64_t ui; jim_float64_t f; };

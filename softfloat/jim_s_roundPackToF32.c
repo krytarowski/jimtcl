@@ -50,7 +50,7 @@ jim_softfloat_roundPackToF32( int sign, jim_int16_t exp, jim_uint32_t sig )
 
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
-    roundingMode = softfloat_roundingMode;
+    roundingMode = jim_softfloat_roundingMode;
     roundNearEven = (roundingMode == jim_softfloat_round_near_even);
     roundIncrement = 0x40;
     if ( ! roundNearEven && (roundingMode != jim_softfloat_round_near_maxMag) ) {
