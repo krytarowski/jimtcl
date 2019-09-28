@@ -34,49 +34,48 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =============================================================================*/
 
-#include <stdbool.h>
-#include <stdint.h>
-#include "platform.h"
-#include "internals.h"
-#include "specialize.h"
-#include "softfloat.h"
+#include "jim.h"
+#include "jim-floats.h"
+#include "jim-softfloat-internals.h"
 
-int_fast64_t
- softfloat_roundMToI64(
-     bool sign, uint32_t *extSigPtr, uint_fast8_t roundingMode, bool exact )
+#include "jim-softfloat-specialize.h"
+
+jim_int_fast64_t
+ jim_softfloat_roundMToI64(
+     jim_bool sign, jim_uint32_t *extSigPtr, jim_uint_fast8_t roundingMode, jim_bool exact )
 {
-    uint64_t sig;
-    uint32_t sigExtra;
-    union { uint64_t ui; int64_t i; } uZ;
-    int64_t z;
+    jim_uint64_t sig;
+    jim_uint32_t sigExtra;
+    union { jim_uint64_t ui; jim_int64_t i; } uZ;
+    jim_int64_t z;
 
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
     sig =
-        (uint64_t) extSigPtr[indexWord( 3, 2 )]<<32
-            | extSigPtr[indexWord( 3, 1 )];
-    sigExtra = extSigPtr[indexWordLo( 3 )];
+        (uint64_t) extSigPtr[jim_indexWord( 3, 2 )]<<32
+            | extSigPtr[jim_indexWord( 3, 1 )];
+    sigExtra = extSigPtr[jim_indexWordLo( 3 )];
     if (
-        (roundingMode == softfloat_round_near_maxMag)
-            || (roundingMode == softfloat_round_near_even)
+        (roundingMode == jim_softfloat_round_near_maxMag)
+            || (roundingMode == jim_softfloat_round_near_even)
     ) {
         if ( 0x80000000 <= sigExtra ) goto increment;
     } else {
         if (
             sigExtra
                 && (sign
-                        ? (roundingMode == softfloat_round_min)
+                        ? (roundingMode == jim_softfloat_round_min)
 #ifdef SOFTFLOAT_ROUND_ODD
-                              || (roundingMode == softfloat_round_odd)
+                              || (roundingMode == jim_softfloat_round_odd)
 #endif
-                        : (roundingMode == softfloat_round_max))
+                        : (roundingMode == jim_softfloat_round_max))
         ) {
  increment:
             ++sig;
             if ( !sig ) goto invalid;
             if (
                 (sigExtra == 0x80000000)
-                    && (roundingMode == softfloat_round_near_even)
+                    && (roundingMode == jim_softfloat_round_near_even)
             ) {
                 sig &= ~(uint_fast64_t) 1;
             }
@@ -87,16 +86,15 @@ int_fast64_t
     if ( z && ((z < 0) ^ sign) ) goto invalid;
     if ( sigExtra ) {
 #ifdef SOFTFLOAT_ROUND_ODD
-        if ( roundingMode == softfloat_round_odd ) z |= 1;
+        if ( roundingMode == jim_softfloat_round_odd ) z |= 1;
 #endif
-        if ( exact ) softfloat_exceptionFlags |= softfloat_flag_inexact;
+        if ( exact ) softfloat_exceptionFlags |= jim_softfloat_flag_inexact;
     }
     return z;
     /*------------------------------------------------------------------------
     *------------------------------------------------------------------------*/
  invalid:
-    softfloat_raiseFlags( softfloat_flag_invalid );
-    return sign ? i64_fromNegOverflow : i64_fromPosOverflow;
+    jim_softfloat_raiseFlags( jim_softfloat_flag_invalid );
+    return sign ? jim_i64_fromNegOverflow : jim_i64_fromPosOverflow;
 
 }
-
