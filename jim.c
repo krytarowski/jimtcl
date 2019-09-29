@@ -7827,10 +7827,10 @@ static int JimExprOpNumUnary(Jim_Interp *interp, struct JimExprNode *node)
 
 static jim_double JimRandDouble(Jim_Interp *interp)
 {
-    jim_double x;
+    unsigned long x;
     JimRandomBytes(interp, &x, sizeof(x));
 
-    return x;
+    return jim_double_div(jim_wide_to_double(x), jim_wide_to_double((unsigned long)~0));
 }
 
 static int JimExprOpIntUnary(Jim_Interp *interp, struct JimExprNode *node)
